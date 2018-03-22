@@ -68,4 +68,3 @@ let CHAT = async() =>
         return;
     });
 }
-CHAT().then(() => console.log("chat connection initialized"));

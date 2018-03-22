@@ -101,10 +101,10 @@ function render()
     uniforms.T.value += deltaTime;
 }
 
-(function()
+let GAME = function()
 {
     initThree();
     render();
     let pressedKeys = [];
     window.addEventListener("resize", (e)=>readStageSize());
-})();
+}
