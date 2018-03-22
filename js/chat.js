@@ -1,5 +1,4 @@
-// let SOCKET = new WebSocket("ws://posync-position-sync.7e14.starter-us-west-2.openshiftapps.com/:8080/");
-let SOCKET = new WebSocket("ws://10.196.14.219:8080/");
+let SOCKET = new WebSocket("ws://posync-position-sync.7e14.starter-us-west-2.openshiftapps.com/:8080/");
 
 let CHAT = async() =>
 {
