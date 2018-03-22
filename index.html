@@ -1,1 +1,42 @@
-"Hello World" 
+<html>
+    <head>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/91/three.min.js"></script>
+    </head>
+    <body style="
+        left: 0px;
+        right: 0px;
+        max-width: 100%; margin: 0px;
+        height: 100%;
+        user-select: none;
+        overflow: hidden;
+        oncontextmenu="return false;">
+
+        <div id="stage" style="
+            position: absolute;
+            width: 100%; height: 100%"></div>
+
+        <div style="
+            display: grid;
+            grid-template-rows: auto 30px;
+            bottom: 0px;
+            position: relative;
+            margin: 0px;
+            width: 100%; height: 200px;">
+            <div id="chat_history" style="
+                background-color: #bbb;
+                overflow-y: scroll;
+                overflow-x: hidden;"></div>
+
+            <div>
+                <div style="
+                    display: grid;
+                    grid-template-columns: 120px calc(100% - 120px);">
+                    <input id="username" type="text">
+                    <input id="message_input" type="text">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script type="text/javascript" src="js/chat.js"></script>
+<script type="text/javascript" src="js/stage.js"></script>
