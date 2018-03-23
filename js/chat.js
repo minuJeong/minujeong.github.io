@@ -1,5 +1,5 @@
 let SOCKET = new WebSocket("ws://posync-position-sync.7e14.starter-us-west-2.openshiftapps.com/:8080/");
-
+let CHATEVENT = new EventTarget();
 let CHAT = async() =>
 {
     let uuid = uuidv4();
@@ -26,13 +26,17 @@ let CHAT = async() =>
     }));
 
     // message income
-    SOCKET.onmessage = (event) =>
+    let message = (line) =>
     {
-        let line = document.createElement("div");
-        line.textContent = event.data;
-        chat_history.appendChild(line);
+        let lineElem = document.createElement("div");
+        lineElem.textContent = line;
+        chat_history.appendChild(lineElem);
         chat_history.scrollTo(0, chat_history.scrollHeight);
+
+        CHATEVENT.dispatchEvent(new CustomEvent("newmessage", { detail: line }));
     }
+    SOCKET.onmessage = (e) => message(e.data);
+    message("-- Welcome to chat! --");
 
     // send message
     var is_chatting = false;
@@ -57,12 +61,15 @@ let CHAT = async() =>
             message_input.style.visibility = "hidden";
             is_chatting = false;
 
+            let line = message_input.value;
             SOCKET.send(JSON.stringify({
                 userid: userid,
                 username: username.value,
-                msg: message_input.value,
+                msg: line,
             }));
             message_input.value = "";
+
+            CHATEVENT.dispatchEvent(new CustomEvent("send", { detail: line }));
         }
 
         return;
