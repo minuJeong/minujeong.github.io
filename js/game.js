@@ -112,6 +112,11 @@ let GAME = function()
                 })
             ],
             position: [Math.random() - 0.5, 5.0, Math.random() - 0.5],
+            rotation: [
+                Math.random() * Math.PI * 2.0,
+                Math.random() * Math.PI * 2.0,
+                Math.random() * Math.PI * 2.0
+            ]
         }).addTo(world).then((b)=>balls.push(b));
     });
 }
