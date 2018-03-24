@@ -39,38 +39,23 @@ let CHAT = async() =>
     message("-- Welcome to chat! --");
 
     // send message
-    var is_chatting = false;
     document.addEventListener("keydown", (e)=>
     {
         if (e.keyCode != 13) { return; }
-
-        if (!is_chatting)
+        if (message_input.value == "")
         {
-            message_input.style.visibility = "visible";
-            message_input.focus();
-            message_input.scrollTo(0, message_input.scrollHeight);
-            is_chatting = true;
+            return;
         }
-        else
-        {
-            if (message_input.value == "")
-            {
-                return;
-            }
 
-            message_input.style.visibility = "hidden";
-            is_chatting = false;
+        let line = message_input.value;
+        SOCKET.send(JSON.stringify({
+            userid: userid,
+            username: username.value,
+            msg: line,
+        }));
+        message_input.value = "";
 
-            let line = message_input.value;
-            SOCKET.send(JSON.stringify({
-                userid: userid,
-                username: username.value,
-                msg: line,
-            }));
-            message_input.value = "";
-
-            CHATEVENT.dispatchEvent(new CustomEvent("send", { detail: line }));
-        }
+        CHATEVENT.dispatchEvent(new CustomEvent("send", { detail: line }));
 
         return;
     });

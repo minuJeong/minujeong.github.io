@@ -63,6 +63,7 @@ function initThree()
     let bloom = new POSTPROCESSING.BloomPass();
     bloom.renderToScreen = true;
     composer.addPass(bloom);
+    composer.addPass(new POSTPROCESSING.ToneMappingPass());
 
     let sun = new THREE.PointLight();
     sun.position.y = 4.0;
@@ -96,8 +97,11 @@ function initScene()
 
     // floor
     {
+        let w = 4.0;
+        let h = 4.0;
+        let l = 2.0;
         let mesh = new THREE.Mesh(
-            new THREE.BoxGeometry(4, 1.0, 4),
+            new THREE.BoxGeometry(w, l, h),
             new THREE.MeshStandardMaterial({
                 color: 0x606060,
             }));
@@ -110,7 +114,7 @@ function initScene()
         transform.setOrigin(new Ammo.btVector3(0, -0.5, 0));
         let motion = new Ammo.btDefaultMotionState(transform);
         let inertia = new Ammo.btVector3(0, 0, 0);
-        let shape = new Ammo.btBoxShape(4.0, 1.0, 4.0);
+        let shape = new Ammo.btBoxShape(new Ammo.btVector3(w * 0.5, l * 0.5, h * 0.5));
         shape.calculateLocalInertia(0, inertia);
         let body = new Ammo.btRigidBody(
             new Ammo.btRigidBodyConstructionInfo(0, motion, shape, inertia));
@@ -118,15 +122,6 @@ function initScene()
         mesh.body = body;
         bodies.push(body);
         ammoWorld.addRigidBody(body);
-        body.setActivationState(4);
-
-        // setInterval(()=>
-        // {
-        //     let s = body.getMotionState();
-        //     let t = new Ammo.btTransform();
-        //     s.getWorldTransform(t);
-        //     console.log(t.getOrigin().x());
-        // }, 1000);
     }
 
     // add preview ball
@@ -142,22 +137,20 @@ function initScene()
         ballTransform.setOrigin(new Ammo.btVector3(0, 10, 0));
         let motion = new Ammo.btDefaultMotionState(ballTransform);
         let shape = new Ammo.btSphereShape(size);
-        let inertia = new Ammo.btVector3(0, 0, 0);
-        shape.calculateLocalInertia(size, inertia)
+        let inertia = new Ammo.btVector3(
+            Math.random() * 7.0 - 3.5,
+            0,
+            Math.random() * 7.0 - 3.5
+        );
+        shape.calculateLocalInertia(size, inertia);
         let body = new Ammo.btRigidBody(
-            new Ammo.btRigidBodyConstructionInfo(size, motion, shape, inertia));
+            new Ammo.btRigidBodyConstructionInfo(
+                size, motion, shape, inertia
+            ));
         body.mesh = ball;
         ball.body = body;
         bodies.push(body);
         ammoWorld.addRigidBody(body);
-
-        setInterval(()=>body.applyCentralImpulse(
-            new Ammo.btVector3(
-                Math.random() - 0.5,
-                Math.random() + 5.5,
-                Math.random() - 0.5
-            )
-        ), 3000);
     }
 }
 
@@ -177,7 +170,11 @@ function simulatePhys(t)
             {
                 trans.setOrigin(new Ammo.btVector3(0, 10, 0));
                 body.setWorldTransform(trans);
-                body.setLinearVelocity(new Ammo.btVector3(0, 0, 0));
+                body.setLinearVelocity(new Ammo.btVector3(
+                    Math.random() - 0.5,
+                    0,
+                    Math.random() - 0.5
+                ));
             }
 
             body.mesh.position.set(
@@ -239,7 +236,7 @@ let GAME = function()
     CHATEVENT.addEventListener("send", (e)=>
     {
         let size = Math.sqrt(e.detail.length) * 0.25;
-        let ballGeom = new THREE.SphereGeometry(size, 12, 12);
+        let ballGeom = new THREE.SphereGeometry(size, 28, 28);
         let mesh = new THREE.Mesh(ballGeom, materials.commonMaterial);
         outline.dynamics.push(mesh);
         scene.add(mesh);
