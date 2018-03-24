@@ -1,4 +1,25 @@
-commonVertexShader = `
+let materials = {};
+let uniforms =
+{
+    T:
+    {
+        value: 0.0,
+    },
+
+    L:
+    {
+        type: 'v3',
+        value: new THREE.Vector3(0, 1, 0),
+    },
+
+    V:
+    {
+        type: 'v3',
+        value: new THREE.Vector3(0, 0, -1),
+    }
+};
+
+let commonVertexShader = `
 varying vec3 N;
 varying vec3 localN;
 void main()
@@ -11,7 +32,7 @@ void main()
 }
 `;
 
-commonFragmentShader = `
+let commonFragmentShader = `
 uniform float T;
 uniform vec3 L;
 uniform vec3 V;
