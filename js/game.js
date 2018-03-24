@@ -214,7 +214,9 @@ let GAME = function()
         size = Math.min(size, 1.5);
         let ballGeom = new THREE.SphereGeometry(size, 28, 28);
         let mesh = new THREE.Mesh(ballGeom, materials.commonMaterial);
+        mesh.position.x = Math.random() - 0.5;
         mesh.position.y = 5 + size;
+        mesh.position.z = Math.random() - 0.5;
         outline.dynamics.push(mesh);
         scene.add(mesh);
 
