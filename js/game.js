@@ -120,35 +120,7 @@ function initScene()
             new Ammo.btRigidBodyConstructionInfo(0, motion, shape, inertia));
         body.mesh = mesh;
         mesh.body = body;
-        bodies.push(body);
-        ammoWorld.addRigidBody(body);
-    }
-
-    // add preview ball
-    {
-        let size = 1.0;
-        let sphereGeo = new THREE.SphereGeometry(size, 28, 28);
-        
-        let ball = new THREE.Mesh(sphereGeo, materials.commonMaterial);
-        outline.ball = ball;
-        scene.add(ball);
-
-        let ballTransform = new Ammo.btTransform();
-        ballTransform.setOrigin(new Ammo.btVector3(0, 10, 0));
-        let motion = new Ammo.btDefaultMotionState(ballTransform);
-        let shape = new Ammo.btSphereShape(size);
-        let inertia = new Ammo.btVector3(
-            Math.random() * 7.0 - 3.5,
-            0,
-            Math.random() * 7.0 - 3.5
-        );
-        shape.calculateLocalInertia(size, inertia);
-        let body = new Ammo.btRigidBody(
-            new Ammo.btRigidBodyConstructionInfo(
-                size, motion, shape, inertia
-            ));
-        body.mesh = ball;
-        ball.body = body;
+        body.setRestitution(0.25);
         bodies.push(body);
         ammoWorld.addRigidBody(body);
     }
@@ -168,19 +140,17 @@ function simulatePhys(t)
             let bquat = trans.getRotation();
             if (bpos.y() < -3)
             {
-                trans.setOrigin(new Ammo.btVector3(0, 10, 0));
-                body.setWorldTransform(trans);
-                body.setLinearVelocity(new Ammo.btVector3(
-                    Math.random() - 0.5,
-                    0,
-                    Math.random() - 0.5
-                ));
+                bodies.splice(bodies.indexOf(body), 1);
+                ammoWorld.removeRigidBody(body);
+                scene.remove(body.mesh);
             }
-
-            body.mesh.position.set(
-                bpos.x(), bpos.y(), bpos.z());
-            body.mesh.quaternion.set(
-                bquat.x(), bquat.y(), bquat.z(), bquat.w());
+            else
+            {
+                body.mesh.position.set(
+                    bpos.x(), bpos.y(), bpos.z());
+                body.mesh.quaternion.set(
+                    bquat.x(), bquat.y(), bquat.z(), bquat.w());
+            }
         }
     });
 }
@@ -235,17 +205,23 @@ let GAME = function()
 
     CHATEVENT.addEventListener("send", (e)=>
     {
-        let size = Math.sqrt(e.detail.length) * 0.25;
+        
+    });
+
+    CHATEVENT.addEventListener("newmessage", (e)=>
+    {
+        let size = Math.sqrt(e.detail.length) * 0.125;
+        size = Math.min(size, 1.5);
         let ballGeom = new THREE.SphereGeometry(size, 28, 28);
         let mesh = new THREE.Mesh(ballGeom, materials.commonMaterial);
+        mesh.position.y = 5 + size;
         outline.dynamics.push(mesh);
         scene.add(mesh);
 
         let transform = new Ammo.btTransform();
         transform.setOrigin(new Ammo.btVector3(
-            Math.random() * 0.2 - 0.1,
-            10 + size,
-            Math.random() * 0.2 - 0.1));
+            mesh.position.x, mesh.position.y, mesh.position.z)
+        );
         let shape = new Ammo.btSphereShape(size);
         let inertia = new Ammo.btVector3(0, 0, 0);
         shape.calculateLocalInertia(size, inertia);
@@ -258,14 +234,8 @@ let GAME = function()
         ));
         body.mesh = mesh;
         mesh.body = body;
+        body.setRestitution(0.86);
         bodies.push(body);
         ammoWorld.addRigidBody(body);
-    });
-    CHATEVENT.addEventListener("newmessage", (e)=>
-    {
-        outline.ball.body.activate();
-        outline.ball.body.applyCentralImpulse(
-            new Ammo.btVector3(0, Math.sqrt(e.detail.length), 0)
-        );
     });
 }
