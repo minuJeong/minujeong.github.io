@@ -26,7 +26,8 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
 
     // start listening chat
     SOCKET.send(JSON.stringify({
-        userid: userid
+        userid: userid,
+        username: username.value,
     }));
 
     // message income
@@ -42,6 +43,20 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
         let income = JSON.parse(data);
         switch(income["mode"])
         {
+            case "playingusers":
+                WSCONNEVENT.dispatchEvent(new CustomEvent("playingusers", { detail: income }));
+                break;
+
+            case "newuser":
+                if (income["id"] == userid)
+                {
+                    return;
+                }
+
+                addChatLine("new user join: " + income["name"]);
+                WSCONNEVENT.dispatchEvent(new CustomEvent("newuser", { detail: income }));
+                break;
+
             case "chat":
                 addChatLine(income["sender"] + ": " + income["content"]);
                 WSCONNEVENT.dispatchEvent(new CustomEvent("newchat", { detail: income }));
@@ -49,6 +64,10 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
 
             case "pos":
                 WSCONNEVENT.dispatchEvent(new CustomEvent("pos", { detail: income }));
+                break;
+
+            case "exit":
+                WSCONNEVENT.dispatchEvent(new CustomEvent("exit", { detail: income }))
                 break;
 
             default:
@@ -80,5 +99,13 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
         WSCONNEVENT.dispatchEvent(new CustomEvent("send", { detail: line }));
 
         return;
+    });
+
+    WSCONNEVENT.addEventListener("syncpos", (e)=>
+    {
+        SOCKET.send(JSON.stringify({
+            userid: userid,
+            pos: e.detail,
+        }));
     });
 }
