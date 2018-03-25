@@ -169,7 +169,6 @@ let GAME = function()
 
     WSCONNEVENT.addEventListener("exit", (e)=>
     {
-        console.log("user looged out");
         if (e.detail.id in otherPlayers)
         {
             world.remove(otherPlayers[e.detail.id]);

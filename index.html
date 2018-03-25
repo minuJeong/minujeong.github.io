@@ -141,11 +141,11 @@
         {
             return;
         }
-        document.removeEventListener("keyup", validateSignup);
+        document.removeEventListener("keypress", validateSignup);
         signup(username_input.value);
     }
 
     username_input.removeAttribute("disabled");
-    document.addEventListener("keyup", validateSignup);
+    document.addEventListener("keypress", validateSignup);
     username_input.focus();
 </script>

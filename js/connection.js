@@ -67,6 +67,7 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
                 break;
 
             case "exit":
+                addChatLine("user logged out: " + income.id);
                 WSCONNEVENT.dispatchEvent(new CustomEvent("exit", { detail: income }))
                 break;
 
@@ -79,7 +80,7 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
     addChatLine("-- Welcome to chat! --");
 
     // send message
-    document.addEventListener("keydown", (e)=>
+    document.addEventListener("keypress", (e)=>
     {
         if (e.keyCode != 13) { return; }
         message_input.focus();
