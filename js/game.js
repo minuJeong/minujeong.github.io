@@ -80,7 +80,17 @@ function init()
 
         material: materials.commonMaterial,
         position: {x: 0, y: 0, z: 0},
-    }).addTo(world).then((c) => player = c);
+    }).addTo(world).then((c) =>
+    {
+        player = c;
+        anime({
+            loop: -1,
+            update: ()=>
+            {
+                c.rotation.y += 0.02;
+            }
+        });
+    });
 }
 
 let update = new WHS.Loop((clock)=>
