@@ -113,8 +113,8 @@ function init()
             let dx = camera.position.x - player.position.x;
             let dz = camera.position.z - player.position.z;
 
-            camera.position.x += (ox - dx + lookX) * 0.01;
-            camera.position.z += (oz - dz + lookZ) * 0.01;
+            camera.position.x += (ox - dx + lookX) * 0.1;
+            camera.position.z += (oz - dz + lookZ) * 0.1;
 
             input = {x: 0, y: 0};
             if (isMouseDown)
