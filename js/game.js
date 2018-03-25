@@ -4,6 +4,7 @@ let physworld = null;
 let sun = null;
 let player = null;
 let otherPlayers = {};
+let pressedKeys = [];
 
 function spawnOtherPlayer(id, pos)
 {
@@ -22,7 +23,8 @@ function init()
 {
     clock = new THREE.Clock();
     camera = new WHS.PerspectiveCamera({
-        position: new THREE.Vector3(0, 2, 7),
+        position: new THREE.Vector3(0, 3, 6),
+        rotation: new THREE.Vector3(-Math.atan2(3.0, 6.0), 0, 0),
     });
 
     world = new WHS.App([
@@ -37,15 +39,17 @@ function init()
 
     uniforms.V.value.copy(camera.position);
     uniforms.V.value.normalize();
+
     sun = new WHS.DirectionalLight({
         light: {},
-        position: [0, 4.0, 0],
-        rotation: [0, 0, 0],
+        position: [0.0, 4.0, 0.0],
     });
+
     sun.addTo(world);
     new WHS.AmbientLight({
-        color: 0x404090
+        color: 0x503090
     }).addTo(world);
+
     uniforms.L.value.copy(sun.position);
     uniforms.L.value.normalize();
 
@@ -58,7 +62,8 @@ function init()
 
     // floor
     new WHS.Box({
-        geometry: {
+        geometry:
+        {
             width: 4.0,
             height: 2.0,
             depth: 4.0,
@@ -73,71 +78,75 @@ function init()
     // char
     new WHS.Sphere({
         geometry: {
-            radius: 0.4,
+            radius: 0.5,
             widthSegments: 32,
             heightSegments: 32,
         },
-
         material: materials.commonMaterial,
-        position: {x: 0, y: 0, z: 0},
     }).addTo(world).then((c) =>
     {
         player = c;
-        anime({
-            loop: -1,
-            update: ()=>
+        let ox = camera.position.x - player.position.x;
+        let oy = camera.position.y - player.position.y;
+        let oz = camera.position.z - player.position.z;
+        let lookX = 0.0;
+        let lookZ = 0.0;
+
+        let update = new WHS.Loop((clock)=>
+        {
+            let delta = clock.getDelta();
+
+            player.rotation.x += 0.02;
+            player.rotation.y += 0.02;
+            player.rotation.z += 0.02;
+
+            let dx = camera.position.x - player.position.x;
+            let dy = camera.position.y - player.position.y;
+            let dz = camera.position.z - player.position.z;
+
+            camera.position.x += (ox - dx + lookX) * 0.05;
+            camera.position.y += (oy - dy) * 0.05;
+            camera.position.z += (oz - dz + lookZ) * 0.05;
+
+            let input = {x: 0, y: 0, z: 0};
+            for (var i = GPADINPUT.length - 1; i >= 0; i--)
             {
-                c.rotation.y += 0.02;
+                let pad = GPADINPUT[i];
+                if(!pad)
+                {
+                    continue;
+                }
+
+                lookX = (pad.rstick.x * 20.0 - lookX) * 0.2;
+                lookZ = (pad.rstick.y * 20.0 - lookZ) * 0.2;
+                if (Math.abs(pad.lstick.x) > 0.1)
+                {
+                    input.x += pad.lstick.x * delta * 4.0;
+                }
+                if (Math.abs(pad.lstick.y) > 0.1)
+                {
+                    input.z += pad.lstick.y * delta * 4.0;
+                }
+
+                player.position.x += input.x;
+                player.position.z += input.z;
+
+                // send position to server
+                WSCONNEVENT.dispatchEvent(
+                    new CustomEvent(
+                        "syncpos", {detail: player.position}
+                    ));
             }
         });
+        world.addLoop(update);
+        update.start();
+        world.start();
     });
 }
-
-let update = new WHS.Loop((clock)=>
-{
-    let delta = clock.getDelta();
-    let input = {x: 0, y: 0, z: 0};
-    for (var i = GPADINPUT.length - 1; i >= 0; i--)
-    {
-        let pad = GPADINPUT[i];
-        if(!pad)
-        {
-            continue;
-        }
-
-        if (Math.abs(pad.lstick.x) > 0.1)
-        {
-            input.x += pad.lstick.x * delta;
-        }
-        if (Math.abs(pad.lstick.y) > 0.1)
-        {
-            input.z += pad.lstick.y * delta;
-        }
-
-        if (player != null)
-        {
-            player.position.x += input.x;
-            player.position.z += input.z;
-
-            // send position to server
-            WSCONNEVENT.dispatchEvent(
-                new CustomEvent(
-                    "syncpos", {detail: player.position}
-                )
-            );
-        }
-    }
-});
 
 let GAME = function()
 {
     init();
-    world.addLoop(update);
-    update.start();
-    world.start();
-
-    let pressedKeys = [];
-
     WSCONNEVENT.addEventListener("playingusers", (e)=>
     {
         let playingUsers = e.detail["users"];
