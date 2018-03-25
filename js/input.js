@@ -1,9 +1,6 @@
 
-let pressedButtons = [];
-let KEYBOARDINPUT = {
-    movement: new THREE.Vector2(),
-};
-
+var isMouseDown = false;
+var mouseDragStart = {x: 0, y: 0}
 let GPADINPUT = [null, null, null, null];
 
 let GPAD = ()=>{
@@ -34,41 +31,19 @@ let GPAD = ()=>{
         }
     }
 
-    let poll_keyboard = ()=>
-    {
-        var dx = 0;
-        var dy = 0;
-        pressedButtons.forEach((k)=>{
-            switch(k)
-            {
-                case 37:
-                    dx = -1;
-                    break;
-                case 38:
-                    dy = -1;
-                    break;
-                case 39:
-                    dx = 1;
-                    break;
-                case 40:
-                    dy = 1;
-                    break;
-            }
-
-            KEYBOARDINPUT.movement.x = dx;
-            KEYBOARDINPUT.movement.y = dx;
-            KEYBOARDINPUT.movement.normalize();
-        });
-    };
-
     let loop = ()=>
     {
         requestAnimationFrame(loop);
         poll_pad();
-        poll_keyboard();
     };
     loop();
 
-    document.addEventListener("keydown", (e)=>pressedButtons.push(e.keyCode));
-    document.addEventListener("keyup", (e)=>pressedButtons.pop(pressedButtons.indexOf(e.keyCode)));
+    document.body.onmousedown = (e)=> {
+        isMouseDown = true;
+        mouseDragStart.x = e.clientX;
+        mouseDragStart.y = e.clientY;
+    };
+    document.body.onmouseup = (e)=> {
+        isMouseDown = false;
+    };
 };

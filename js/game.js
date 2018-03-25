@@ -4,8 +4,7 @@ let physworld = null;
 let sun = null;
 let player = null;
 let otherPlayers = {};
-let pressedKeys = [];
-
+let input = null;
 function spawnOtherPlayer(id, pos)
 {
     new WHS.Sphere({
@@ -82,15 +81,26 @@ function init()
             widthSegments: 32,
             heightSegments: 32,
         },
+        position: new THREE.Vector3(0, 0, 0),
         material: materials.commonMaterial,
     }).addTo(world).then((c) =>
     {
         player = c;
+        player.position.x = 0;
+        player.position.y = 0;
+        player.position.z = 0;
         let ox = camera.position.x - player.position.x;
-        let oy = camera.position.y - player.position.y;
         let oz = camera.position.z - player.position.z;
-        let lookX = 0.0;
-        let lookZ = 0.0;
+        var lookX = 0.0;
+        var lookZ = 0.0;
+
+        var mouseX = 0.0;
+        var mouseY = 0.0;
+        document.addEventListener("mousemove", (e)=>
+        {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
 
         let update = new WHS.Loop((clock)=>
         {
@@ -101,37 +111,45 @@ function init()
             player.rotation.z += 0.02;
 
             let dx = camera.position.x - player.position.x;
-            let dy = camera.position.y - player.position.y;
             let dz = camera.position.z - player.position.z;
 
             camera.position.x += (ox - dx + lookX) * 0.05;
-            camera.position.y += (oy - dy) * 0.05;
             camera.position.z += (oz - dz + lookZ) * 0.05;
 
-            let input = {x: 0, y: 0, z: 0};
-            for (var i = GPADINPUT.length - 1; i >= 0; i--)
+            input = {x: 0, y: 0};
+            if (isMouseDown)
             {
-                let pad = GPADINPUT[i];
-                if(!pad)
+                input.x = (mouseX - mouseDragStart.x) * delta * 0.1;
+                input.y = (mouseY - mouseDragStart.y) * delta * 0.1;
+            }
+            else
+            {
+                for (var i = GPADINPUT.length - 1; i >= 0; i--)
                 {
-                    continue;
-                }
+                    let pad = GPADINPUT[i];
+                    if(!pad) { continue; }
 
-                lookX = (pad.rstick.x * 20.0 - lookX) * 0.2;
-                lookZ = (pad.rstick.y * 20.0 - lookZ) * 0.2;
-                if (Math.abs(pad.lstick.x) > 0.1)
-                {
-                    input.x += pad.lstick.x * delta * 4.0;
+                    lookX = (pad.rstick.x * 20.0 - lookX) * 0.2;
+                    lookZ = (pad.rstick.y * 20.0 - lookZ) * 0.2;
+                    if (Math.abs(pad.lstick.x) > 0.1)
+                    {
+                        input.x += pad.lstick.x * delta * 2.0;
+                    }
+                    if (Math.abs(pad.lstick.y) > 0.1)
+                    {
+                        input.y += pad.lstick.y * delta * 2.0;
+                    }
                 }
-                if (Math.abs(pad.lstick.y) > 0.1)
-                {
-                    input.z += pad.lstick.y * delta * 4.0;
-                }
+            }
 
-                player.position.x += input.x;
-                player.position.z += input.z;
+            player.position.x += input.x;
+            player.position.z += input.y;
 
-                // send position to server
+            // send position to server
+            if (!isNaN(player.position.x) &&
+                !isNaN(player.position.y) &&
+                !isNaN(player.position.z))
+            {
                 WSCONNEVENT.dispatchEvent(
                     new CustomEvent(
                         "syncpos", {detail: player.position}
