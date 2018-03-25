@@ -119,8 +119,8 @@ function init()
             input = {x: 0, y: 0};
             if (isMouseDown)
             {
-                input.x = (mouseX - mouseDragStart.x) * delta * 0.01;
-                input.y = (mouseY - mouseDragStart.y) * delta * 0.01;
+                input.x = (mouseX - mouseDragStart.x) * delta * 0.005;
+                input.y = (mouseY - mouseDragStart.y) * delta * 0.005;
             }
             else
             {
