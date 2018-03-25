@@ -15,7 +15,7 @@ let uniforms =
     V:
     {
         type: 'v3',
-        value: new THREE.Vector3(0, 0, -1),
+        value: new THREE.Vector3(0, 0, 1),
     }
 };
 
@@ -40,10 +40,10 @@ varying vec3 N;
 varying vec3 localN;
 void main()
 {
-    vec3 H = (L - V) * 0.5;
+    vec3 H = (L + V) * 0.5;
     float ndl = dot(N, L);
     float ndh = dot(N, H);
-    float fresnel = 1.0 - max(dot(N, -V), 0.0);
+    float fresnel = 1.0 - max(dot(N, V), 0.0);
     vec3 diff = mix(vec3(0.84, 0.42, 0.15), localN * localN, 0.5);
     vec3 spec = vec3(1.0, 1.0, 1.0) * pow(ndh, 32.0);
     vec3 ambient = mix(abs(vec3(N.z, N.y, N.x) * localN), abs(localN), 1.0 - ndh);

@@ -1,6 +1,8 @@
-let SOCKET = new WebSocket("ws://posync-position-sync.7e14.starter-us-west-2.openshiftapps.com/:8080/");
-let CHATEVENT = new EventTarget();
-let CHAT = async() =>
+let ADDR_OPENSHFIT = "ws://posync-position-sync.7e14.starter-us-west-2.openshiftapps.com/:8080/";
+let ADDR_LOCAL = "ws://localhost:8080/";
+let SOCKET = null;
+let WSCONNEVENT = new EventTarget();
+let WSCONN = async(addr = ADDR_OPENSHFIT) =>
 {
     let uuid = uuidv4();
     let userid = "user_" + uuid;
@@ -11,6 +13,8 @@ let CHAT = async() =>
             return v.toString(16);
         });
     }
+
+    SOCKET = new WebSocket(addr);
 
     // wait for connection
     while(SOCKET.readyState != 1)
@@ -26,22 +30,40 @@ let CHAT = async() =>
     }));
 
     // message income
-    let message = (line) =>
-    {
+    let addChatLine = (line) => {
         let lineElem = document.createElement("div");
         lineElem.textContent = line;
         chat_history.appendChild(lineElem);
         chat_history.scrollTo(0, chat_history.scrollHeight);
+    };
 
-        CHATEVENT.dispatchEvent(new CustomEvent("newmessage", { detail: line }));
+    let onMessage = (data) =>
+    {
+        let income = JSON.parse(data);
+        switch(income["mode"])
+        {
+            case "chat":
+                addChatLine(income["sender"] + ": " + income["content"]);
+                WSCONNEVENT.dispatchEvent(new CustomEvent("newchat", { detail: income }));
+                break;
+
+            case "pos":
+                WSCONNEVENT.dispatchEvent(new CustomEvent("pos", { detail: income }));
+                break;
+
+            default:
+                console.log(income, mode);
+                break;
+        }
     }
-    SOCKET.onmessage = (e) => message(e.data);
-    message("-- Welcome to chat! --");
+    SOCKET.onmessage = (e) => onMessage(e.data);
+    addChatLine("-- Welcome to chat! --");
 
     // send message
     document.addEventListener("keydown", (e)=>
     {
         if (e.keyCode != 13) { return; }
+        message_input.focus();
         if (message_input.value == "")
         {
             return;
@@ -55,7 +77,7 @@ let CHAT = async() =>
         }));
         message_input.value = "";
 
-        CHATEVENT.dispatchEvent(new CustomEvent("send", { detail: line }));
+        WSCONNEVENT.dispatchEvent(new CustomEvent("send", { detail: line }));
 
         return;
     });
