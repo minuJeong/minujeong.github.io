@@ -68,7 +68,8 @@
                         bottom: 30px;
                         width: 100%;"></div>
                     <input id="message_input" type="text"
-                        maxlength="150" 
+                        maxlength="150"
+                        autocomplete="off"
                         style="
                             position: absolute;
                             bottom: 5px;
@@ -106,6 +107,7 @@
                     </div>
                     <input id="username_input" type="text"
                         onblur="username_input.focus();"
+                        autocomplete="off"
                         required disabled
                         pattern="^[^<>]+$"
                         minlength="1"
