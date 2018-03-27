@@ -41,13 +41,9 @@ function init()
 
     sun = new WHS.DirectionalLight({
         light: {},
-        position: [0.0, 4.0, 3.0],
+        position: [-3.0, 4.0, 6.0],
     });
-
     sun.addTo(world);
-    new WHS.AmbientLight({
-        color: 0x503090
-    }).addTo(world);
 
     uniforms.L.value.copy(sun.position);
     uniforms.L.value.normalize();
@@ -62,9 +58,9 @@ function init()
     // char
     new WHS.Sphere({
         geometry: {
-            radius: 0.25,
-            widthSegments: 32,
-            heightSegments: 32,
+            radius: 1.5,
+            widthSegments: 48,
+            heightSegments: 48,
         },
         position: new THREE.Vector3(0, 0, 0),
         material: materials.commonMaterial,
