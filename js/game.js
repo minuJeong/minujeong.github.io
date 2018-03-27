@@ -41,7 +41,7 @@ function init()
 
     sun = new WHS.DirectionalLight({
         light: {},
-        position: [0.0, 4.0, 0.0],
+        position: [0.0, 4.0, 3.0],
     });
 
     sun.addTo(world);
@@ -59,25 +59,10 @@ function init()
         fragmentShader: commonFragmentShader,
     });
 
-    // floor
-    new WHS.Box({
-        geometry:
-        {
-            width: 4.0,
-            height: 2.0,
-            depth: 4.0,
-        },
-
-        material: new THREE.MeshStandardMaterial({
-            color: 0x454545,
-        }),
-        position: {x: 0, y: -1.5, z: 0},
-    }).addTo(world);
-
     // char
     new WHS.Sphere({
         geometry: {
-            radius: 0.5,
+            radius: 0.25,
             widthSegments: 32,
             heightSegments: 32,
         },
@@ -105,9 +90,9 @@ function init()
         let update = new WHS.Loop((clock)=>
         {
             let delta = clock.getDelta();
+            uniforms.T.value += delta;
 
             player.rotation.x += 0.02;
-            player.rotation.y += 0.02;
             player.rotation.z += 0.02;
 
             let dx = camera.position.x - player.position.x;
@@ -131,11 +116,11 @@ function init()
 
                     lookX = (pad.rstick.x * 20.0 - lookX) * 0.2;
                     lookZ = (pad.rstick.y * 20.0 - lookZ) * 0.2;
-                    if (Math.abs(pad.lstick.x) > 0.1)
+                    if (Math.abs(pad.lstick.x) > 0.25)
                     {
                         input.x += pad.lstick.x * delta * 2.0;
                     }
-                    if (Math.abs(pad.lstick.y) > 0.1)
+                    if (Math.abs(pad.lstick.y) > 0.25)
                     {
                         input.y += pad.lstick.y * delta * 2.0;
                     }
