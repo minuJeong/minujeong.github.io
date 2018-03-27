@@ -9,11 +9,11 @@ function spawnOtherPlayer(id, pos)
 {
     new WHS.Sphere({
         geometry: {
-            radius: 0.25,
+            radius: 1.0,
             widthSegments: 32,
             heightSegments: 32,
         },
-        material: materials.commonMaterial,
+        material: materials.otherPlayerMaterial,
         position: {x: pos.x, y: pos.y, z: pos.z},
     }).addTo(world).then((p)=>otherPlayers[id] = p);
 }
@@ -36,8 +36,8 @@ function init()
         new WHS.ResizeModule(),
     ]);
 
-    uniforms.V.value.copy(camera.position);
-    uniforms.V.value.normalize();
+    baseUniform.V.value.copy(camera.position);
+    baseUniform.V.value.normalize();
 
     sun = new WHS.DirectionalLight({
         light: {},
@@ -45,25 +45,33 @@ function init()
     });
     sun.addTo(world);
 
-    uniforms.L.value.copy(sun.position);
-    uniforms.L.value.normalize();
+    baseUniform.L.value.copy(sun.position);
+    baseUniform.L.value.normalize();
 
     // materials
-    materials.commonMaterial = new THREE.ShaderMaterial({
-        uniforms: uniforms,
+    materials.playerMaterial = new THREE.ShaderMaterial({
+        uniforms: Object.assign(playerUniform, baseUniform),
         vertexShader: commonVertexShader,
         fragmentShader: commonFragmentShader,
     });
+    materials.playerMaterial.uniforms.C.value.set(1, 0, 0);
+
+    materials.otherPlayerMaterial = new THREE.ShaderMaterial({
+        uniforms: Object.assign(otherPlayerUniform, baseUniform),
+        vertexShader: commonVertexShader,
+        fragmentShader: commonFragmentShader,
+    });
+    materials.otherPlayerMaterial.uniforms.C.value.set(0, 0, 1);
 
     // char
     new WHS.Sphere({
         geometry: {
-            radius: 1.5,
+            radius: 1.0,
             widthSegments: 48,
             heightSegments: 48,
         },
-        position: new THREE.Vector3(0, 0, 0),
-        material: materials.commonMaterial,
+        position: new THREE.Vector3(Math.random(), 0, Math.random()),
+        material: materials.playerMaterial,
     }).addTo(world).then((c) =>
     {
         player = c;
@@ -86,7 +94,7 @@ function init()
         let update = new WHS.Loop((clock)=>
         {
             let delta = clock.getDelta();
-            uniforms.T.value += delta;
+            baseUniform.T.value += delta;
 
             player.rotation.x += 0.02;
             player.rotation.z += 0.02;

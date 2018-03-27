@@ -1,7 +1,8 @@
 
 let materials = {};
+let uniforms = {};
 let envtex = null;
-let uniforms =
+let baseUniform =
 {
     T:
     {
@@ -11,13 +12,13 @@ let uniforms =
     L:
     {
         type: 'v3',
-        value: new THREE.Vector3(0, 1, 0),
+        value: new THREE.Vector3(0.0, 1.0, 0.0),
     },
 
     V:
     {
         type: 'v3',
-        value: new THREE.Vector3(0, 0, 1),
+        value: new THREE.Vector3(0.0, 0.0, 1.0),
     },
 
     ENV:
@@ -36,6 +37,22 @@ let uniforms =
     }
 };
 
+let otherPlayerUniform = {
+    C:
+    {
+        type: 'v3',
+        value: new THREE.Vector3(1.0, 1.0, 1.0)
+    }
+};
+
+let playerUniform = {
+    C:
+    {
+        type: 'v3',
+        value: new THREE.Vector3(1.0, 1.0, 1.0)
+    }
+};
+
 let commonVertexShader = `
 varying vec3 P, N, localN;
 varying vec2 UV;
@@ -46,14 +63,14 @@ void main()
     vec3 pos = position;
     vec4 wpos = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
     UV = uv;
-    P = wpos.xyz;
+    P = (modelMatrix * vec4(pos, 1.0)).xyz;
     gl_Position = wpos;
 }
 `;
 
 let commonFragmentShader = `
 uniform float T;
-uniform vec3 L, V;
+uniform vec3 L, V, C;
 uniform sampler2D ENV;
 varying vec3 P, N, localN;
 varying vec2 UV;
@@ -65,21 +82,22 @@ void main()
     float ndh = dot(N, H);
     float ndv = dot(N, V);
 
-    float t = T * 0.05;
-    float ofs = (t - floor(t));
+    float u = atan(N.z, N.x) / (pi * 2.0) + ((P.x + P.z) / 50.0);
+    float v = N.y * 0.5 + 0.5;
+    vec3 env = texture2D(ENV, vec2(u, v)).xyz * 1.0;
 
-    float lat = atan(N.z, N.x) / (pi * 2.0) + ofs;
-    float lon = N.y * 0.5 + 0.5;
-    vec3 env = texture2D(ENV, vec2(lat, lon)).xyz * 1.0;
-
-    vec3 mid = vec3(0.5, 0.5, 0.5);
-    vec3 dark = vec3(0.3, 0.33, 0.33);
+    float tofs = cos(T * 6.0) * 0.05 + 0.05;
+    vec3 mid = max(vec3(0.4, 0.4, 0.4), C);
+    mid.x += tofs;
+    vec3 dark = vec3(0.05, 0.05, 0.05);
+    vec3 diffuse = mix(mid, dark, 1.0 - pow(ndl, 2.0));
 
     float fresnel = 1.0 - ndv;
     vec3 ref = 2.0 * dot(N, L) * N - L;
     float rim = pow(clamp(fresnel, 0.0, 1.0), 0.5) * 0.09;
-    float spec = pow(clamp(dot(ref, V), 0.0, 1.0), 2.0);
+    float spec = pow(clamp(dot(ref, V), 0.0, 1.0), 3.0);
+    vec3 reflected = env * (max(spec, rim));
 
-    gl_FragColor = vec4(mix(mid, dark, 1.0 - ndl) + env * (max(spec, rim)), 1.0);
+    gl_FragColor = vec4(diffuse + reflected, 1.0);
 }
 `;

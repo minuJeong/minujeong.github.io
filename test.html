@@ -116,8 +116,8 @@
 </html>
 
 <script type="text/javascript" src="js/connection.js"></script>
-<script type="text/javascript" src="js/shaders.js"></script>
 <script type="text/javascript" src="js/input.js"></script>
+<script type="text/javascript" src="js/shaders.js"></script>
 <script type="text/javascript" src="js/game.js"></script>
 <script type="text/javascript">
     let signup = (n)=>
@@ -127,7 +127,8 @@
         signup_cover.style.visibility = "hidden";
         ingame.style.visibility = "visible";
         // WSCONN(ADDR_OPENSHFIT);
-        WSCONN(ADDR_LOCAL);
+        // WSCONN(ADDR_LOCAL);
+        WSCONN("ws://10.196.14.219:8080/");
         GAME();
         GPAD();
 
