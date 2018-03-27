@@ -62,8 +62,8 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
                 WSCONNEVENT.dispatchEvent(new CustomEvent("newchat", { detail: income }));
                 break;
 
-            case "pos":
-                WSCONNEVENT.dispatchEvent(new CustomEvent("pos", { detail: income }));
+            case "sync":
+                WSCONNEVENT.dispatchEvent(new CustomEvent("sync", { detail: income }));
                 break;
 
             case "exit":
@@ -72,7 +72,7 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
                 break;
 
             default:
-                console.log(income, mode);
+                console.log(income, income["mode"]);
                 break;
         }
     }
@@ -98,15 +98,14 @@ let WSCONN = async(addr = ADDR_OPENSHFIT) =>
         message_input.value = "";
 
         WSCONNEVENT.dispatchEvent(new CustomEvent("send", { detail: line }));
-
-        return;
     });
 
-    WSCONNEVENT.addEventListener("syncpos", (e)=>
+    WSCONNEVENT.addEventListener("sync", (e)=>
     {
         SOCKET.send(JSON.stringify({
             userid: userid,
-            pos: e.detail,
+            pos: e.detail.position,
+            rot: e.detail.rotation,
         }));
     });
 }

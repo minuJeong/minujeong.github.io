@@ -54,15 +54,13 @@ let playerUniform = {
 };
 
 let commonVertexShader = `
-varying vec3 P, N, localN;
-varying vec2 UV;
+varying vec3 P, N;
 void main()
 {
-    localN = normal;
+    vec3 localN = normal;
     N = normalMatrix * localN;
     vec3 pos = position;
     vec4 wpos = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-    UV = uv;
     P = (modelMatrix * vec4(pos, 1.0)).xyz;
     gl_Position = wpos;
 }
@@ -72,8 +70,7 @@ let commonFragmentShader = `
 uniform float T;
 uniform vec3 L, V, C;
 uniform sampler2D ENV;
-varying vec3 P, N, localN;
-varying vec2 UV;
+varying vec3 P, N;
 void main()
 {
     float pi = 3.14159265358;

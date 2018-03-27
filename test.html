@@ -1,8 +1,8 @@
 <html oncontextmenu="return false;">
     <head>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/90/three.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/whitestorm.js/2.1.9/whs.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
+        <script type="text/javascript" src=js/OBJLoader.js></script>
 
         <style type="text/css">
             ::-webkit-scrollbar
@@ -127,8 +127,8 @@
         signup_cover.style.visibility = "hidden";
         ingame.style.visibility = "visible";
         // WSCONN(ADDR_OPENSHFIT);
-        // WSCONN(ADDR_LOCAL);
-        WSCONN("ws://10.196.14.219:8080/");
+        WSCONN(ADDR_LOCAL);
+        // WSCONN("ws://10.196.14.219:8080/");
         GAME();
         GPAD();
 
@@ -146,7 +146,7 @@
         signup(username_input.value);
     }
 
-    signup("AutoTester");
+    signup("AutoTester_" + Math.round(Math.random() * 100));
     username_input.removeAttribute("disabled");
     document.addEventListener("keypress", validateSignup);
     username_input.focus();

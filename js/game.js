@@ -1,50 +1,63 @@
 
+var W = stage.clientWidth;
+var H = stage.clientHeight;
+
+let input = null;
+var mouseX = 0.0;
+var mouseY = 0.0;
+let camY = 14.0;
+let camZ = 22.0;
+
+let clock = null;
+
+let renderer = null;
 let world = null;
-let physworld = null;
 let sun = null;
 let player = null;
 let otherPlayers = {};
-let input = null;
+
+
 function spawnOtherPlayer(id, pos)
 {
-    new WHS.Sphere({
-        geometry: {
-            radius: 1.0,
-            widthSegments: 32,
-            heightSegments: 32,
-        },
-        material: materials.otherPlayerMaterial,
-        position: {x: pos.x, y: pos.y, z: pos.z},
-    }).addTo(world).then((p)=>otherPlayers[id] = p);
+    let otherPlayer = new THREE.Mesh(
+        new THREE.SphereGeometry(1.0, 32, 32),
+        materials.otherPlayerMaterial
+    );
+    otherPlayer.position.copy(pos);
+    let dirDisp = new THREE.Mesh(
+        new THREE.BoxGeometry(0.2, 0.2, 0.2),
+        materials.otherPlayerMaterial
+    );
+    dirDisp.position.z = 1;
+    otherPlayer.add(dirDisp);
+    world.add(otherPlayer);
+    otherPlayers[id] = otherPlayer;
 }
 
 function init()
 {
     clock = new THREE.Clock();
-    camera = new WHS.PerspectiveCamera({
-        position: new THREE.Vector3(0, 3, 6),
-        rotation: new THREE.Vector3(-Math.atan2(3.0, 6.0), 0, 0),
+    renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
     });
+    renderer.setSize(W, H);
+    stage.appendChild(renderer.domElement);
 
-    world = new WHS.App([
-        new WHS.ElementModule(document.getElementById("stage")),
-        new WHS.SceneModule(),
-        new WHS.DefineModule("camera", camera),,
-        new WHS.RenderingModule({
-            alpha: true,
-        }),
-        new WHS.ResizeModule(),
-    ]);
+    camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 1000);
+    camera.position.x = 0;
+    camera.position.y = camY;
+    camera.position.z = camZ;
+    camera.rotation.x = -Math.atan2(camY - 1.5, camZ);
+    world = new THREE.Scene();
 
     baseUniform.V.value.copy(camera.position);
     baseUniform.V.value.normalize();
 
-    sun = new WHS.DirectionalLight({
-        light: {},
-        position: [-3.0, 4.0, 6.0],
+    sun = new THREE.DirectionalLight({
+        position: new THREE.Vector3(-3.0, 4.0, 6.0),
     });
-    sun.addTo(world);
-
+    world.add(sun);
     baseUniform.L.value.copy(sun.position);
     baseUniform.L.value.normalize();
 
@@ -54,106 +67,102 @@ function init()
         vertexShader: commonVertexShader,
         fragmentShader: commonFragmentShader,
     });
-    materials.playerMaterial.uniforms.C.value.set(1, 0, 0);
 
     materials.otherPlayerMaterial = new THREE.ShaderMaterial({
         uniforms: Object.assign(otherPlayerUniform, baseUniform),
         vertexShader: commonVertexShader,
         fragmentShader: commonFragmentShader,
     });
+
+    materials.playerMaterial.uniforms.C.value.set(1, 0, 0);
     materials.otherPlayerMaterial.uniforms.C.value.set(0, 0, 1);
 
-    // char
-    new WHS.Sphere({
-        geometry: {
-            radius: 1.0,
-            widthSegments: 48,
-            heightSegments: 48,
-        },
-        position: new THREE.Vector3(Math.random(), 0, Math.random()),
-        material: materials.playerMaterial,
-    }).addTo(world).then((c) =>
+    // player view
+    player = new THREE.Object3D();
     {
-        player = c;
-        player.position.x = 0;
-        player.position.y = 0;
-        player.position.z = 0;
-        let ox = camera.position.x - player.position.x;
-        let oz = camera.position.z - player.position.z;
-        var lookX = 0.0;
-        var lookZ = 0.0;
+        world.add(player);
+        let objloader = new THREE.OBJLoader();
+        objloader.load(
+            "res/mesh/body.obj",
+            (mesh)=>
+            {
+                let deb = new THREE.Mesh(new THREE.SphereGeometry(1.55, 32, 32), materials.playerMaterial);
+                deb.position.y = 4.0;
+                player.add(deb);
+                player.add(mesh);
+            },
+        );
+    }
 
-        var mouseX = 0.0;
-        var mouseY = 0.0;
-        document.addEventListener("mousemove", (e)=>
+    ox = camera.position.x;
+    oz = camera.position.z;
+}
+
+
+function animate()
+{
+    requestAnimationFrame(animate);
+    renderer.render(world, camera);
+
+    let delta = clock.getDelta();
+    baseUniform.T.value += delta;
+
+    let dx = camera.position.x - player.position.x;
+    let dz = camera.position.z - player.position.z;
+
+    input = {x: 0, y: 0};
+    if (isMouseDown)
+    {
+        input.x = (mouseX - mouseDragStart.x) * delta * 0.005;
+        input.y = (mouseY - mouseDragStart.y) * delta * 0.005;
+    }
+    else
+    {
+        for (var i = GPADINPUT.length - 1; i >= 0; i--)
         {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+            let pad = GPADINPUT[i];
+            if(!pad) { continue; }
 
-        let update = new WHS.Loop((clock)=>
-        {
-            let delta = clock.getDelta();
-            baseUniform.T.value += delta;
-
-            player.rotation.x += 0.02;
-            player.rotation.z += 0.02;
-
-            let dx = camera.position.x - player.position.x;
-            let dz = camera.position.z - player.position.z;
-
-            camera.position.x += (ox - dx + lookX) * 0.1;
-            camera.position.z += (oz - dz + lookZ) * 0.1;
-
-            input = {x: 0, y: 0};
-            if (isMouseDown)
+            if (Math.abs(pad.lstick.x) > 0.25)
             {
-                input.x = (mouseX - mouseDragStart.x) * delta * 0.005;
-                input.y = (mouseY - mouseDragStart.y) * delta * 0.005;
+                input.x += pad.lstick.x * delta * 2.0;
             }
-            else
+            if (Math.abs(pad.lstick.y) > 0.25)
             {
-                for (var i = GPADINPUT.length - 1; i >= 0; i--)
-                {
-                    let pad = GPADINPUT[i];
-                    if(!pad) { continue; }
-
-                    lookX = (pad.rstick.x * 20.0 - lookX) * 0.2;
-                    lookZ = (pad.rstick.y * 20.0 - lookZ) * 0.2;
-                    if (Math.abs(pad.lstick.x) > 0.25)
-                    {
-                        input.x += pad.lstick.x * delta * 2.0;
-                    }
-                    if (Math.abs(pad.lstick.y) > 0.25)
-                    {
-                        input.y += pad.lstick.y * delta * 2.0;
-                    }
-                }
+                input.y += pad.lstick.y * delta * 2.0;
             }
+        }
+    }
 
-            player.position.x += input.x;
-            player.position.z += input.y;
+    player.position.x += input.x;
+    player.position.z += input.y;
+    camera.position.x += (player.position.x - camera.position.x) * 0.05;
+    camera.position.y += ((player.position.y + camY) - camera.position.y) * 0.05;
+    camera.position.z += ((player.position.z + camZ) - camera.position.z) * 0.05;
 
-            // send position to server
-            if (!isNaN(player.position.x) &&
-                !isNaN(player.position.y) &&
-                !isNaN(player.position.z))
-            {
-                WSCONNEVENT.dispatchEvent(
-                    new CustomEvent(
-                        "syncpos", {detail: player.position}
-                    ));
+    if ((input.x * input.x + input.y * input.y) > 0.0)
+    {
+        let tq = new THREE.Quaternion();
+        tq.setFromEuler(new THREE.Euler(0, -Math.atan2(input.y, input.x) + Math.PI * 0.5, 0));
+        player.quaternion.slerp(tq, 0.2);
+    }
+
+    // send position to server
+    WSCONNEVENT.dispatchEvent(new CustomEvent(
+        "sync", {
+            detail: {
+                position: player.position,
+                rotation: player.rotation,
             }
-        });
-        world.addLoop(update);
-        update.start();
-        world.start();
-    });
+        }
+    ));
 }
 
 let GAME = function()
 {
     init();
+    animate();
+
     WSCONNEVENT.addEventListener("playingusers", (e)=>
     {
         let playingUsers = e.detail["users"];
@@ -168,7 +177,7 @@ let GAME = function()
         spawnOtherPlayer(e.detail["id"], e.detail["pos"]);
     });
 
-    WSCONNEVENT.addEventListener("pos", (e)=>
+    WSCONNEVENT.addEventListener("sync", (e)=>
     {
         let sender = e.detail;
         if (sender.id in otherPlayers)
@@ -176,6 +185,10 @@ let GAME = function()
             otherPlayers[sender.id].position.x = sender.pos.x;
             otherPlayers[sender.id].position.y = sender.pos.y;
             otherPlayers[sender.id].position.z = sender.pos.z;
+
+            otherPlayers[sender.id].rotation.x = sender.rot._x;
+            otherPlayers[sender.id].rotation.y = sender.rot._y;
+            otherPlayers[sender.id].rotation.z = sender.rot._z;
         }
     });
 
@@ -191,3 +204,18 @@ let GAME = function()
         }
     });
 }
+
+document.addEventListener("mousemove", (e)=>
+{
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+window.addEventListener("resize", (e)=>
+{
+    W = stage.clientWidth;
+    H = stage.clientHeight;
+    renderer.setSize(W, H);
+    camera.aspect = W / H;
+    camera.updateProjectionMatrix();
+});
