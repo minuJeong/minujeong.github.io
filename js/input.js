@@ -2,7 +2,6 @@
 var isMouseDown = false;
 var mouseDragStart = {x: 0, y: 0}
 let GPADINPUT = [null, null, null, null];
-
 let GPAD = ()=>{
     let poll_pad = ()=>
     {

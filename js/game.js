@@ -5,8 +5,8 @@ var H = stage.clientHeight;
 let input = null;
 var mouseX = 0.0;
 var mouseY = 0.0;
-let camY = 14.0;
-let camZ = 22.0;
+let camY = 5.0;
+let camZ = 10.0;
 
 let clock = null;
 
@@ -81,17 +81,18 @@ function init()
     player = new THREE.Object3D();
     {
         world.add(player);
-        let objloader = new THREE.OBJLoader();
-        objloader.load(
-            "res/mesh/body.obj",
-            (mesh)=>
+        let loader = new THREE.OBJLoader();
+        loader.load("res/mesh/body.obj", (g)=>
+        {
+            g.traverse((c)=>
             {
-                let deb = new THREE.Mesh(new THREE.SphereGeometry(1.55, 32, 32), materials.playerMaterial);
-                deb.position.y = 4.0;
-                player.add(deb);
-                player.add(mesh);
-            },
-        );
+                if(c instanceof THREE.Mesh)
+                {
+                    c.material = materials.playerMaterial;
+                }
+            });
+            player.add(g);
+        });
     }
 
     ox = camera.position.x;
