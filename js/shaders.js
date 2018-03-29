@@ -1,58 +1,4 @@
 
-let materials = {};
-let uniforms = {};
-let envtex = null;
-let baseUniform =
-{
-    T:
-    {
-        value: 0.0,
-    },
-
-    L:
-    {
-        type: 'v3',
-        value: new THREE.Vector3(0.0, 1.0, 0.0),
-    },
-
-    V:
-    {
-        type: 'v3',
-        value: new THREE.Vector3(0.0, 0.0, 1.0),
-    },
-
-    ENV:
-    {
-        type: 't',
-        get value()
-        {
-            if(envtex == null)
-            {
-                envtex = new THREE.TextureLoader().load("res/texture/env.jpg");
-                envtex.wrapS = THREE.RepeatWrapping;
-                envtex.wrapT = THREE.RepeatWrapping;
-            }
-            return envtex;
-        }
-    }
-};
-
-let otherPlayerUniform = {
-    C:
-    {
-        type: 'v3',
-        value: new THREE.Vector3(1.0, 1.0, 1.0)
-    }
-};
-
-let playerUniform = {
-    C:
-    {
-        type: 'v3',
-        value: new THREE.Vector3(1.0, 1.0, 1.0)
-    }
-};
-
 let commonVertexShader = `
 varying vec3 P, N;
 void main()
@@ -96,5 +42,29 @@ void main()
     vec3 reflected = env * (max(spec, rim));
 
     gl_FragColor = vec4(diffuse + reflected, 1.0);
+}
+`;
+
+let terrainVertexShader = `
+uniform vec3 L;
+varying float r;
+varying vec3 P;
+void main()
+{
+    vec3 N = normalize(normalMatrix * normal);
+    r = dot(N, L);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    P = position;
+}
+`;
+
+let terrainFragmentShader = `
+varying float r;
+varying vec3 P;
+void main()
+{
+    vec3 color = vec3(0.5, 0.45, 0.75);
+    color.x += P.y * 10.0;
+    gl_FragColor = vec4(color * r, 1.0);
 }
 `;

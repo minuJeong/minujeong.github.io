@@ -38,7 +38,9 @@
     </head>
     <body style="margin: 0px; padding: 0px; background-image: linear-gradient(#111, #222); background-color: #111;
                  user-select: none;">
-        <param id="username" value="NOTSET"></body>
+
+
+        <param id="username" value="NOTSET">
         <div style="position: relative; width: 100%; height: 100%;">
             <div id="ingame" style="visibility: hidden;">
                 <div id="stage" style="position: absolute; width: 100%; height: 100%; margin: 0px;"></div>
@@ -58,7 +60,7 @@
                     color: #ccc;
                     border-radius: 5px;
                     background-color: #222;
-                    opacity: 0.9;
+                    opacity: 0.5;
                     overflow-y: scroll;
                     display: grid;
                     grid-template-rows: auto 25px;">
@@ -111,6 +113,11 @@
                         maxlength="12">
             </div>
         </div>
+
+        <div id="debug" style="
+            position: absolute;
+            color: #fff;
+            right: 15px; top: 15px;">
         </div>
     </body>
 </html>
@@ -118,6 +125,8 @@
 <script type="text/javascript" src="js/connection.js"></script>
 <script type="text/javascript" src="js/input.js"></script>
 <script type="text/javascript" src="js/shaders.js"></script>
+<script type="text/javascript" src="js/materials.js"></script>
+<script type="text/javascript" src="js/terrain.js"></script>
 <script type="text/javascript" src="js/game.js"></script>
 <script type="text/javascript">
     let signup = (n)=>
@@ -127,8 +136,9 @@
         signup_cover.style.visibility = "hidden";
         ingame.style.visibility = "visible";
         // WSCONN(ADDR_OPENSHFIT);
-        WSCONN(ADDR_LOCAL);
+        // WSCONN(ADDR_LOCAL);
         // WSCONN("ws://10.196.14.219:8080/");
+        WSCONN("ws://192.168.0.3:8080/");
         GAME();
         GPAD();
 

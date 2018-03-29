@@ -25,7 +25,7 @@ let GPAD = ()=>{
 
             GPADINPUT[i] = {};
             GPADINPUT[i].lstick = new THREE.Vector2(pad.axes[0], pad.axes[1]);
-            GPADINPUT[i].rstick = new THREE.Vector2(pad.axes[2], pad.axes[3]);
+            GPADINPUT[i].rstick = new THREE.Vector2(pad.axes[2], pad.axes[5]);
             GPADINPUT[i].buttons = pad.buttons;
         }
     }

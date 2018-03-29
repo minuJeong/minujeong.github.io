@@ -2,11 +2,16 @@
 var W = stage.clientWidth;
 var H = stage.clientHeight;
 
-let input = null;
+const INPUT_SPEED = 3.0;
+const FORWARD_TO_RIGHT = new THREE.Euler(0, Math.PI * 0.5, 0);
+
+let input = new THREE.Vector3();
 var mouseX = 0.0;
 var mouseY = 0.0;
 let camY = 5.0;
-let camZ = 10.0;
+let camZ = 12.0;
+let camCenter = null;
+var camdir = new THREE.Vector3();
 
 let clock = null;
 
@@ -16,20 +21,25 @@ let sun = null;
 let player = null;
 let otherPlayers = {};
 
+let objLoader = new THREE.OBJLoader();
+
 
 function spawnOtherPlayer(id, pos)
 {
-    let otherPlayer = new THREE.Mesh(
-        new THREE.SphereGeometry(1.0, 32, 32),
-        materials.otherPlayerMaterial
-    );
-    otherPlayer.position.copy(pos);
-    let dirDisp = new THREE.Mesh(
-        new THREE.BoxGeometry(0.2, 0.2, 0.2),
-        materials.otherPlayerMaterial
-    );
-    dirDisp.position.z = 1;
-    otherPlayer.add(dirDisp);
+    let otherPlayer = new THREE.Object3D();
+    {
+        objLoader.load("res/mesh/body.obj", (g)=>
+        {
+            g.traverse((c)=>
+            {
+                if(c instanceof THREE.Mesh)
+                {
+                    c.material = materials.otherPlayerMaterial;
+                }
+            });
+            otherPlayer.add(g);
+        });
+    }
     world.add(otherPlayer);
     otherPlayers[id] = otherPlayer;
 }
@@ -44,45 +54,30 @@ function init()
     renderer.setSize(W, H);
     stage.appendChild(renderer.domElement);
 
-    camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(35, W / H, 0.1, 1000);
     camera.position.x = 0;
     camera.position.y = camY;
     camera.position.z = camZ;
-    camera.rotation.x = -Math.atan2(camY - 1.5, camZ);
+    camera.rotation.x = -Math.atan2(camY - 0.75, camZ);
     world = new THREE.Scene();
 
     baseUniform.V.value.copy(camera.position);
     baseUniform.V.value.normalize();
 
     sun = new THREE.DirectionalLight({
-        position: new THREE.Vector3(-3.0, 4.0, 6.0),
+        position: new THREE.Vector3(-23.0, 40.0, 26.0),
     });
     world.add(sun);
     baseUniform.L.value.copy(sun.position);
     baseUniform.L.value.normalize();
 
-    // materials
-    materials.playerMaterial = new THREE.ShaderMaterial({
-        uniforms: Object.assign(playerUniform, baseUniform),
-        vertexShader: commonVertexShader,
-        fragmentShader: commonFragmentShader,
-    });
-
-    materials.otherPlayerMaterial = new THREE.ShaderMaterial({
-        uniforms: Object.assign(otherPlayerUniform, baseUniform),
-        vertexShader: commonVertexShader,
-        fragmentShader: commonFragmentShader,
-    });
-
-    materials.playerMaterial.uniforms.C.value.set(1, 0, 0);
-    materials.otherPlayerMaterial.uniforms.C.value.set(0, 0, 1);
+    world.add(new TERRAIN());
 
     // player view
     player = new THREE.Object3D();
     {
         world.add(player);
-        let loader = new THREE.OBJLoader();
-        loader.load("res/mesh/body.obj", (g)=>
+        objLoader.load("res/mesh/body.obj", (g)=>
         {
             g.traverse((c)=>
             {
@@ -93,6 +88,10 @@ function init()
             });
             player.add(g);
         });
+
+        camCenter = new THREE.Object3D();
+        camCenter.add(camera);
+        world.add(camCenter);
     }
 
     ox = camera.position.x;
@@ -111,40 +110,44 @@ function animate()
     let dx = camera.position.x - player.position.x;
     let dz = camera.position.z - player.position.z;
 
-    input = {x: 0, y: 0};
-    if (isMouseDown)
+    input.set(0, 0, 0);
     {
-        input.x = (mouseX - mouseDragStart.x) * delta * 0.005;
-        input.y = (mouseY - mouseDragStart.y) * delta * 0.005;
-    }
-    else
-    {
+        front = camCenter.getWorldDirection();
+        right = front.clone().applyEuler(FORWARD_TO_RIGHT);
         for (var i = GPADINPUT.length - 1; i >= 0; i--)
         {
             let pad = GPADINPUT[i];
             if(!pad) { continue; }
 
-            if (Math.abs(pad.lstick.x) > 0.25)
+            if (Math.abs(pad.rstick.x) > 0.25 ||
+                Math.abs(pad.rstick.y) > 0.25)
             {
-                input.x += pad.lstick.x * delta * 2.0;
+                camCenter.rotateY(-pad.rstick.x * delta * 7.5);
             }
-            if (Math.abs(pad.lstick.y) > 0.25)
+
+            if (Math.abs(pad.lstick.x) > 0.25 ||
+                Math.abs(pad.lstick.y) > 0.25)
             {
-                input.y += pad.lstick.y * delta * 2.0;
+                let inx = pad.lstick.x * delta * INPUT_SPEED;
+                let iny = pad.lstick.y * delta * INPUT_SPEED;
+                input.addVectors(
+                    right.multiplyScalar(inx),
+                    front.multiplyScalar(iny)
+                );
             }
         }
     }
 
     player.position.x += input.x;
-    player.position.z += input.y;
-    camera.position.x += (player.position.x - camera.position.x) * 0.05;
-    camera.position.y += ((player.position.y + camY) - camera.position.y) * 0.05;
-    camera.position.z += ((player.position.z + camZ) - camera.position.z) * 0.05;
+    player.position.z += input.z;
+    camCenter.position.x += (player.position.x - camCenter.position.x) * 0.1;
+    camCenter.position.y += (player.position.y - camCenter.position.y) * 0.1;
+    camCenter.position.z += (player.position.z - camCenter.position.z) * 0.1;
 
-    if ((input.x * input.x + input.y * input.y) > 0.0)
+    if ((input.x * input.x + input.z * input.z) > 0.0)
     {
         let tq = new THREE.Quaternion();
-        tq.setFromEuler(new THREE.Euler(0, -Math.atan2(input.y, input.x) + Math.PI * 0.5, 0));
+        tq.setFromEuler(new THREE.Euler(0, -Math.atan2(input.z, input.x) + Math.PI * 0.5, 0));
         player.quaternion.slerp(tq, 0.2);
     }
 
