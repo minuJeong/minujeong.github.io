@@ -48,10 +48,10 @@ void main()
 let terrainVertexShader = `
 uniform vec3 L;
 varying float r;
-varying vec3 P;
+varying vec3 P, N;
 void main()
 {
-    vec3 N = normalize(normalMatrix * normal);
+    N = normalize(normalMatrix * normal);
     r = dot(N, L);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     P = position;
@@ -60,11 +60,11 @@ void main()
 
 let terrainFragmentShader = `
 varying float r;
-varying vec3 P;
+varying vec3 P, N;
 void main()
 {
-    vec3 color = vec3(0.5, 0.45, 0.75);
-    color.x += P.y * 10.0;
-    gl_FragColor = vec4(color * r, 1.0);
+    vec3 color = vec3(0.1, 0.1, 0.1);
+    color.x += -P.y / 0.2;
+    gl_FragColor = vec4(N.zxy + color * r, 1.0);
 }
 `;
