@@ -61,12 +61,8 @@ function init()
     camera.rotation.x = -Math.atan2(camY - 0.75, camZ);
     world = new THREE.Scene();
 
-    baseUniform.V.value.copy(camera.position);
-    baseUniform.V.value.normalize();
-
-    sun = new THREE.DirectionalLight({
-        position: new THREE.Vector3(-23.0, 40.0, 26.0),
-    });
+    sun = new THREE.DirectionalLight();
+    sun.position.copy(new THREE.Vector3(-13.0, 40.0, 13.0))
     world.add(sun);
     baseUniform.L.value.copy(sun.position);
     baseUniform.L.value.normalize();

@@ -16,12 +16,6 @@ let baseUniform =
         value: new THREE.Vector3(0.0, 1.0, 0.0),
     },
 
-    V:
-    {
-        type: 'v3',
-        value: new THREE.Vector3(0.0, 0.0, 1.0),
-    },
-
     ENV:
     {
         type: 't',
@@ -38,7 +32,7 @@ let baseUniform =
     }
 };
 
-let otherPlayerUniform = {
+let playerUniform = {
     C:
     {
         type: 'v3',
@@ -46,7 +40,7 @@ let otherPlayerUniform = {
     }
 };
 
-let playerUniform = {
+let otherPlayerUniform = {
     C:
     {
         type: 'v3',
@@ -61,20 +55,19 @@ let terrainUniform = {
 // materials
 materials.playerMaterial = new THREE.ShaderMaterial({
     uniforms: Object.assign(playerUniform, baseUniform),
-    vertexShader: commonVertexShader,
-    fragmentShader: commonFragmentShader,
+    vertexShader: shaders.PNVVertex,
+    fragmentShader: shaders.PawnFrag,
 });
 
 materials.otherPlayerMaterial = new THREE.ShaderMaterial({
     uniforms: Object.assign(otherPlayerUniform, baseUniform),
-    vertexShader: commonVertexShader,
-    fragmentShader: commonFragmentShader,
+    vertexShader: shaders.PNVVertex,
+    fragmentShader: shaders.PawnFrag,
 });
 
-materials.terrainMaterial = new THREE.ShaderMaterial({
-    uniforms: Object.assign(terrainUniform, baseUniform),
-    vertexShader: terrainVertexShader,
-    fragmentShader: terrainFragmentShader,
+materials.terrainMaterial = new THREE.MeshStandardMaterial({
+     color: 0x506050,
+     roughness: 1.0,
 });
 
 materials.playerMaterial.uniforms.C.value.set(1, 0, 0);
