@@ -1,15 +1,17 @@
 shaders = {
     PNVVertex: `
-    uniform vec3 L;
-    varying vec3 P, N, V, LV;
+    uniform vec3 L, V;
+    varying vec3 P, N, LV;
     void main()
     {
         vec3 pos = position;
         vec4 wpos = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
         P = wpos.xyz;
         N = normalMatrix * normal;
-        V = normalize(cameraPosition - P);
+
+        mat4 m = viewMatrix;
         LV = normalize(P - L);
+
         gl_Position = wpos;
     }
 
@@ -17,12 +19,11 @@ shaders = {
 
     PawnFrag: `
     uniform float T;
-    uniform vec3 L, C;
+    uniform vec3 L, V, C;
     uniform sampler2D ENV;
-    varying vec3 P, N, V, LV;
+    varying vec3 P, N, LV;
     void main()
     {
-
         float pi = 3.14159265358;
         vec3 H = (LV + V) * 0.5;
         float ndl = dot(N, LV);
@@ -39,10 +40,9 @@ shaders = {
         vec3 dark = vec3(0.15, 0.10, 0.15);
         vec3 diffuse = mix(mid, dark, 1.0 - (pow(ndl, 2.0) * sign(ndl)));
 
-        float fresnel = 1.0 - ndv;
         vec3 ref = 2.0 * ndl * N - LV;
         float spec = pow(clamp(dot(ref, V), 0.0, 1.0), 16.0);
-        vec3 reflected = env * (max(spec, fresnel));
+        vec3 reflected = env * (max(spec, ndv));
 
         gl_FragColor = vec4(diffuse + reflected, 1.0);
     }

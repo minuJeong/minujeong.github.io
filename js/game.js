@@ -8,8 +8,8 @@ const FORWARD_TO_RIGHT = new THREE.Euler(0, Math.PI * 0.5, 0);
 let input = new THREE.Vector3();
 var mouseX = 0.0;
 var mouseY = 0.0;
-let camY = 5.0;
-let camZ = 12.0;
+let camY = 3.0;
+let camZ = 7.0;
 let camCenter = null;
 var camdir = new THREE.Vector3();
 
@@ -22,7 +22,6 @@ let player = null;
 let otherPlayers = {};
 
 let objLoader = new THREE.OBJLoader();
-
 
 function spawnOtherPlayer(id, pos)
 {
@@ -139,6 +138,9 @@ function animate()
     camCenter.position.x += (player.position.x - camCenter.position.x) * 0.1;
     camCenter.position.y += (player.position.y - camCenter.position.y) * 0.1;
     camCenter.position.z += (player.position.z - camCenter.position.z) * 0.1;
+    baseUniform.V.value.copy(camCenter.position);
+    baseUniform.V.value.add(camera.position);
+    baseUniform.V.value.normalize();
 
     if ((input.x * input.x + input.z * input.z) > 0.0)
     {
@@ -203,19 +205,19 @@ let GAME = function()
             world.remove(otherPlayers[e.detail.id]);
         }
     });
+
+    document.addEventListener("mousemove", (e)=>
+    {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    window.addEventListener("resize", (e)=>
+    {
+        W = stage.clientWidth;
+        H = stage.clientHeight;
+        renderer.setSize(W, H);
+        camera.aspect = W / H;
+        camera.updateProjectionMatrix();
+    });
 }
-
-document.addEventListener("mousemove", (e)=>
-{
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
-
-window.addEventListener("resize", (e)=>
-{
-    W = stage.clientWidth;
-    H = stage.clientHeight;
-    renderer.setSize(W, H);
-    camera.aspect = W / H;
-    camera.updateProjectionMatrix();
-});
