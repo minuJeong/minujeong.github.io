@@ -27,7 +27,7 @@ function spawnOtherPlayer(id, pos)
 {
     let otherPlayer = new THREE.Object3D();
     {
-        objLoader.load("res/mesh/body.obj", (g)=>
+        objLoader.load("res/mesh/body_ank.obj", (g)=>
         {
             g.traverse((c)=>
             {
