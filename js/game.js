@@ -72,7 +72,7 @@ function init()
     player = new THREE.Object3D();
     {
         world.add(player);
-        objLoader.load("res/mesh/mvd2.obj", (g)=>
+        objLoader.load("res/mesh/body_ank.obj", (g)=>
         {
             g.traverse((c)=>
             {
