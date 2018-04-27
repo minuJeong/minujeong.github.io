@@ -1,1 +1,1 @@
-# ![go](http://minujeong.com)
+# [go](http://minujeong.com)
