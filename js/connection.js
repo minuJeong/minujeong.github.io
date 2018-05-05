@@ -1,4 +1,4 @@
-let ADDR_OPENSHFIT = "ws://posync-position-sync.7e14.starter-us-west-2.openshiftapps.com/:8080/";
+let ADDR_OPENSHFIT = "ws://posync-pywebsocket-posync.7e14.starter-us-west-2.openshiftapps.com/:8080/";
 let ADDR_LOCAL = "ws://localhost:8080/";
 let SOCKET = null;
 let WSCONNEVENT = new EventTarget();
