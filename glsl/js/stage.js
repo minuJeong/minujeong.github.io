@@ -9,7 +9,7 @@ let clock = null;
 let defaultUniforms = {
     L: {
         type: "v3",
-        value: new THREE.Vector3(0, 1.0, -0.5)
+        value: new THREE.Vector3(-2, 3, -5)
     },
     T: {
         type: "float",
