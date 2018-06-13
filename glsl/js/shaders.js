@@ -126,7 +126,7 @@ float world(vec3 p, inout vec3 color)
 {
     #define CAMERA_ROTATION_SPEED 0.025
     float a = mod(T * CAMERA_ROTATION_SPEED, PI * 2.0);
-    vec3 pt = rotate(p, vec3(-0.35 - M.y * PI * 2.0, a - M.x * PI * 2.0, cos(T * 0.25) * 0.1));
+    vec3 pt = rotate(p, vec3(-0.35 - M.y * PI * 0.25, a - M.x * PI * 0.25, cos(T * 0.25) * 0.1));
 
     #define TIME_SCALE_1 3.0
     #define TIME_SCALE_2 0.25

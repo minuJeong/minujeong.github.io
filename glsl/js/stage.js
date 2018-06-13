@@ -6,6 +6,7 @@ let renderer = null;
 let scene = null;
 let camera = null;
 let clock = null;
+let targetM = new THREE.Vector2(0, 0);
 let defaultUniforms = {
     aspect:
     {
@@ -32,6 +33,9 @@ function animate()
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
     defaultUniforms.T.value += clock.getDelta();
+
+    defaultUniforms.M.value.x += (targetM.x - defaultUniforms.M.value.x) * 0.05;
+    defaultUniforms.M.value.y += (targetM.y - defaultUniforms.M.value.y) * 0.05;
 }
 
 function STAGE()
@@ -66,7 +70,7 @@ function STAGE()
 
     document.onmousemove = function (e)
     {
-        defaultUniforms.M.value.x = 0.5 + (e.clientX / W) * 0.5;
-        defaultUniforms.M.value.y = 0.5 + (e.clientY / H) * 0.5;
+        targetM.x = 0.5 + (e.clientX / W) * 0.5;
+        targetM.y = 0.5 + (e.clientY / H) * 0.5;
     }
 }
