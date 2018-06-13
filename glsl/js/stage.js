@@ -19,11 +19,6 @@ let defaultUniforms = {
     T: {
         type: "float",
         value: 0.0
-    },
-    BRDFTEX:
-    {
-        type: "t",
-        value: new THREE.TextureLoader().load("res/brdf.png")
     }
 };
 
