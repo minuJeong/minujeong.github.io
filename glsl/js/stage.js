@@ -14,6 +14,11 @@ let defaultUniforms = {
     T: {
         type: "float",
         value: 0.0
+    },
+    BRDFTEX:
+    {
+        type: "t",
+        value: new THREE.TextureLoader().load("res/brdf.png")
     }
 };
 
@@ -27,7 +32,8 @@ function animate()
 function STAGE()
 {
     renderer = new THREE.WebGLRenderer({
-        alpha: true
+        alpha: true,
+        antialias: true
     });
     renderer.setSize(W, H);
 

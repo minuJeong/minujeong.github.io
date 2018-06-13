@@ -25,6 +25,7 @@ let frag =
 
 uniform vec3 L;
 uniform float T;
+uniform sampler2D BRDFTEX;
 
 varying vec2 v_uv;
 
@@ -183,7 +184,7 @@ void main()
     vec3 o = vec3(0, 0, -7.0);
     vec3 r = normalize(vec3(v_uv - 0.5, 1.001));
     vec3 l = normalize(L);
-    vec3 c = vec3(0.95, 0.9, 1.0);
+    vec3 c = vec3(1.0);
 
     float d = raymarch(o, r, c);
     if (d < FAR)
@@ -192,20 +193,26 @@ void main()
 
         vec3 p = o + r * d;
         vec3 n = norm(p);
-        c = c + vec3(1.0) * (p.y * 0.2);
 
         float ao = ambient_occlusion(p, n, c);
 
-        float ndh = dot(n, h);
+        float ndh = clamp(dot(n, h), 0.0, 1.0);
 
-        float lambert = clamp(dot(n, l), -1.0, 1.0);
-        lambert = mix(lambert, 0.3, ao);
+        float lambert = clamp(dot(n, l), 0.0, 1.0);
+        lambert = mix(lambert, 0.5, ao);
 
-        vec3 spec = pow(ndh, 4.0) * vec3(1.0);
+        vec4 brdf = texture2D(BRDFTEX, vec2(mod(-lambert, 1.0), mod(-ndh, 1.0)));
+        gl_FragColor = vec4(brdf.xyz * c, 1.0);
+
+        /*
+        vec3 spec = vec3(pow(ndh, 4.0));
+        gl_FragColor = vec4(c * vec3(toon) + spec, 1.0);
+
         gl_FragColor = vec4(
             c * lambert + (rotate(n, vec3(mod(T, 2.0 * PI)))) * 0.02 + spec,
             1.0
         );
+        */
     }
     else
     {
