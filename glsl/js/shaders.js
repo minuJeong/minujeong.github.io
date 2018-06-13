@@ -136,13 +136,12 @@ float world(vec3 p, inout vec3 color)
 
     #define CAPSULE_RAD 0.025
     #define TILE_CAPSULES 2.0
-    #define FRAME_BLEND 0.1
     #define FRAME_CLAMP FAR
     vec3 tilept = tile(pt, vec3(TILE_CAPSULES));
     float cx = capsule(tilept, vec3(-2.0, 0, 0), vec3(+2.0, 0, 0), CAPSULE_RAD);
     float cy = capsule(tilept, vec3(0, +2.0, 0), vec3(0, -2.0, 0), CAPSULE_RAD);
     float cz = capsule(tilept, vec3(0, 0, -2.0), vec3(0, 0, +2.0), CAPSULE_RAD);
-    float c = max(blend(blend(cy, cz, FRAME_BLEND), cx, FRAME_BLEND), box(pt, vec3(FRAME_CLAMP)));
+    float c = max(min(min(cy, cz), cx), box(pt, vec3(FRAME_CLAMP)));
     if (cx > cy && cz > cy && c < MARCHING_CLAMP)
     {
         color += vec3(-0.1, 0.1, 0.1);
@@ -167,7 +166,8 @@ float world(vec3 p, inout vec3 color)
         ) * GI_INTENSITY, vec3(0));
     }
 
-    float joint_sphere = sphere(tile(pt, vec3(TILE_CAPSULES)), 0.1);
+    #define JOINT_SPHERE_RAD 0.1
+    float joint_sphere = sphere(tile(pt, vec3(TILE_CAPSULES)), JOINT_SPHERE_RAD);
     if (c > joint_sphere && joint_sphere < MARCHING_CLAMP)
     {
         color += vec3(0.5, 0, 0);
@@ -192,9 +192,7 @@ vec3 norm(vec3 p)
 // c: color
 float raymarch(vec3 o, vec3 r, inout vec3 c)
 {
-    #define MINCLIP 2.0
-    float t = MINCLIP;
-
+    float t = 0.0;
     vec3 p = vec3(0);
     float d = 0.0;
     for (int i = MARCHING_MINSTEP; i < MARCHING_STEPS; i++)
@@ -257,13 +255,14 @@ void main()
         lambert = clamp(lambert, 0.0, 1.0);
 
         #define TOON_POWER 16.0
-        #define LAM_MIN 0.25
+        #define LAM_MIN 0.125
         float toon = clamp(pow(2.0 * lambert, TOON_POWER), LAM_MIN, 1.0);
 
         #define SPEC_COLOR vec3(0.85, 0.75, 0.5)
         vec3 h = normalize(o + l);
         float ndh = clamp(dot(n, h), 0.0, 1.0);
-        float spec = pow(ndh + 0.02, 64.0) * 0.1;
+        float ndv = clamp(dot(n, -o), 0.0, 1.0);
+        float spec = pow((ndh + ndv) + 0.01, 64.0) * 0.25;
 
         color = c * toon + SPEC_COLOR * spec;
     }
