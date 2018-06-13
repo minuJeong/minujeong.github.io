@@ -30,7 +30,7 @@ let frag =
 uniform float aspect;
 uniform vec3 L;
 uniform float T;
-uniform sampler2D BRDFTEX;
+uniform vec2 M;
 
 varying vec2 v_uv;
 
@@ -126,7 +126,7 @@ float world(vec3 p, inout vec3 color)
 {
     #define CAMERA_ROTATION_SPEED 0.025
     float a = mod(T * CAMERA_ROTATION_SPEED, PI * 2.0);
-    vec3 pt = rotate(p, vec3(-0.35, a, cos(T * 0.25) * 0.1));
+    vec3 pt = rotate(p, vec3(-0.35 - M.y * PI * 2.0, a - M.x * PI * 2.0, cos(T * 0.25) * 0.1));
 
     #define TIME_SCALE_1 3.0
     #define TIME_SCALE_2 0.25
@@ -143,33 +143,36 @@ float world(vec3 p, inout vec3 color)
     float cy = capsule(tilept, vec3(0, +2.0, 0), vec3(0, -2.0, 0), CAPSULE_RAD);
     float cz = capsule(tilept, vec3(0, 0, -2.0), vec3(0, 0, +2.0), CAPSULE_RAD);
     float c = max(blend(blend(cy, cz, FRAME_BLEND), cx, FRAME_BLEND), box(pt, vec3(FRAME_CLAMP)));
+    if (cx > cy && cz > cy && c < MARCHING_CLAMP)
+    {
+        color += vec3(-0.1, 0.1, 0.1);
+    }
 
     #define GI_DIST 0.3
-    #define GI_BALL_RAD 0.125
     #define GI_BALL_BLEND 0.85
     #define GI_BALL_TRAVEL 2.5
     vec3 pr = translate(pt, vec3(GI_BALL_TRAVEL * ct2, GI_DIST * (ct - st), GI_DIST * (ct + st)));
     vec3 pg = translate(pt, vec3(GI_DIST * (ct - st), GI_BALL_TRAVEL * ct2, GI_DIST * (ct + st)));
     vec3 pb = translate(pt, vec3(GI_DIST * (ct + st), GI_DIST * (ct - st), GI_BALL_TRAVEL * ct2));
-    float sx = sphere(pr, GI_BALL_RAD);
-    float sy = sphere(pg, GI_BALL_RAD);
-    float sz = sphere(pb, GI_BALL_RAD);
-    float sumball = min(min(sx, sy), sz);
-    float s = blend(blend(sx, sy, GI_BALL_BLEND), sz, GI_BALL_BLEND);
-
-    vec3 translation = vec3(ct + st, ct - st, 0) * 1.25;
-    float sw = min(min(
-        sphere(translate(pt, translation.xyz), 0.125),
-        sphere(translate(pt, translation.zxy), 0.125)),
-        sphere(translate(pt, translation.yzx), 0.125));
-    s = blend(s, sw, 0.5);
 
     // add color from ball
-    #define GI_RADISANCE 0.15
-    color += max(vec3(GI_RADISANCE) * - log(vec3(sx, sy, sz)), vec3(0.0));
+    #define GI_RADISANCE 0.5
+    #define GI_INTENSITY 0.75
+    if (c < MARCHING_CLAMP)
+    {
+        color += max(vec3(
+            1.0 - (length(pr) - GI_RADISANCE),
+            1.0 - (length(pg) - GI_RADISANCE),
+            1.0 - (length(pb) - GI_RADISANCE)
+        ) * GI_INTENSITY, vec3(0));
+    }
 
-    #define FRAME_BALL_BLEND 1.25
-    return blend(c, s, FRAME_BALL_BLEND);
+    float joint_sphere = sphere(tile(pt, vec3(TILE_CAPSULES)), 0.1);
+    if (c > joint_sphere && joint_sphere < MARCHING_CLAMP)
+    {
+        color += vec3(0.5, 0, 0);
+    }
+    return min(c, joint_sphere);
 }
 
 // p: sample surface
@@ -189,7 +192,9 @@ vec3 norm(vec3 p)
 // c: color
 float raymarch(vec3 o, vec3 r, inout vec3 c)
 {
-    float t = 0.0;
+    #define MINCLIP 2.0
+    float t = MINCLIP;
+
     vec3 p = vec3(0);
     float d = 0.0;
     for (int i = MARCHING_MINSTEP; i < MARCHING_STEPS; i++)
@@ -267,7 +272,7 @@ void main()
     #define FOG_DIST 2.5
     #define FOG_DENSITY 0.32
     #define FOG_COLOR vec3(0.35, 0.37, 0.42)
-    color = mix(FOG_COLOR, color, clamp(pow(FOG_DIST / d, FOG_DENSITY), 0.0, 1.0));
+    color = mix(FOG_COLOR, color, clamp(pow(FOG_DIST / abs(d), FOG_DENSITY), 0.0, 1.0));
     gl_FragColor = vec4(color, 1.0);
 }
 `;

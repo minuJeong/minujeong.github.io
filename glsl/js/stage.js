@@ -19,6 +19,11 @@ let defaultUniforms = {
     T: {
         type: "float",
         value: 0.0
+    },
+    M:
+    {
+        type: "v2",
+        value: new THREE.Vector2(0, 0)
     }
 };
 
@@ -58,4 +63,10 @@ function STAGE()
     stage.appendChild(renderer.domElement);
     clock = new THREE.Clock();
     animate();
+
+    document.onmousemove = function (e)
+    {
+        defaultUniforms.M.value.x = 0.5 + (e.clientX / W) * 0.5;
+        defaultUniforms.M.value.y = 0.5 + (e.clientY / H) * 0.5;
+    }
 }
