@@ -157,6 +157,13 @@ float world(vec3 p, inout vec3 color)
     float sumball = min(min(sx, sy), sz);
     float s = blend(blend(sx, sy, GI_BALL_BLEND), sz, GI_BALL_BLEND);
 
+    vec3 translation = vec3(ct + st, ct - st, 0) * 1.25;
+    float sw = min(min(
+        sphere(translate(pt, translation.xyz), 0.125),
+        sphere(translate(pt, translation.zxy), 0.125)),
+        sphere(translate(pt, translation.yzx), 0.125));
+    s = blend(s, sw, 0.5);
+
     // add color from ball
     #define GI_RADISANCE 0.15
     color += max(vec3(GI_RADISANCE) * - log(vec3(sx, sy, sz)), vec3(0.0));
@@ -229,7 +236,7 @@ void main()
     vec3 l = normalize(L);
 
     // c: albedo
-    vec3 c = vec3(0.0);
+    vec3 c = vec3(0.125);
     float d = raymarch(o, r, c);
 
     // pixel color
@@ -244,20 +251,23 @@ void main()
         lambert = mix(lambert, ao, 0.5);
         lambert = clamp(lambert, 0.0, 1.0);
 
-        #define TOON_POWER 4.0
+        #define TOON_POWER 16.0
         #define LAM_MIN 0.25
         float toon = clamp(pow(2.0 * lambert, TOON_POWER), LAM_MIN, 1.0);
 
         #define SPEC_COLOR vec3(0.85, 0.75, 0.5)
         vec3 h = normalize(o + l);
         float ndh = clamp(dot(n, h), 0.0, 1.0);
-        float spec = pow(ndh + 0.05, 32.0) * 0.1;
+        float spec = pow(ndh + 0.02, 64.0) * 0.1;
 
         color = c * toon + SPEC_COLOR * spec;
     }
 
     // add simple fog
-    color = mix(vec3(0.28, 0.35, 0.37), color, clamp(10.0 / d, 0.0, 1.0));
+    #define FOG_DIST 2.5
+    #define FOG_DENSITY 0.32
+    #define FOG_COLOR vec3(0.35, 0.37, 0.42)
+    color = mix(FOG_COLOR, color, clamp(pow(FOG_DIST / d, FOG_DENSITY), 0.0, 1.0));
     gl_FragColor = vec4(color, 1.0);
 }
 `;
