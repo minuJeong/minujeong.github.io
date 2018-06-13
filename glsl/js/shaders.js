@@ -1,28 +1,33 @@
 
 ////////////////////////////////////////
-// vert
+// vertex shader
 let vert =
 `
+uniform float aspect;
+
 varying vec2 v_uv;
 void main()
 {
     // use UV value to generate ray
     v_uv = uv;
+    v_uv.x *= aspect;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `;
 
 ////////////////////////////////////////
-// frag
+// fragment shader
 let frag =
 `
 #define FAR 80.0
-#define MARCHING_STEPS 128
+#define MARCHING_MINSTEP 5
+#define MARCHING_STEPS 196
 #define MARCHING_CLAMP 0.000001
 #define NRM_OFS 0.001
 #define AO_OFS 0.01
 #define PI 3.141592
 
+uniform float aspect;
 uniform vec3 L;
 uniform float T;
 uniform sampler2D BRDFTEX;
@@ -30,12 +35,15 @@ uniform sampler2D BRDFTEX;
 varying vec2 v_uv;
 
 
-// transforms
+// p: sample position
+// o: offset amount
 vec3 translate(vec3 p, vec3 o)
 {
     return p - o;
 }
 
+// p: sample position
+// r: rotation in Euler angles (radian)
 vec3 rotate(vec3 p, vec3 r)
 {
     vec3 c = cos(r);
@@ -58,12 +66,22 @@ vec3 rotate(vec3 p, vec3 r)
     return rz * ry * rx * p;
 }
 
-// dist funcs
+// p: sample position
+// t: tiling distance
+vec3 tile(vec3 p, vec3 t)
+{
+    return mod(p, t) - 0.5 * t;
+}
+
+// p: sample position
+// r: radius
 float sphere(vec3 p, float r)
 {
     return length(p) - r;
 }
 
+// p: sample position
+// b: width, height, length (scalar along x, y, z axis)
 float box(vec3 p, vec3 b)
 {
     return length(max(abs(p) - b, 0.0));
@@ -86,82 +104,88 @@ float capsule(vec3 p, vec3 a, vec3 b, float r)
     return length(dp - db * h) - r;
 }
 
+// p: sample position
+// c: cylinder c
+// b: box b
 float clamp_cylinder(vec3 p, vec3 c, vec3 b)
 {
     return max(cylinder(p, c), box(p, b));
 }
 
-// blendings
+// a: primitive a
+// b: primitive b
+// k: blending amount
 float blend(float a, float b, float k)
 {
     float h = clamp(0.5 + 0.5 * (a - b) / k, 0.0, 1.0);
     return mix(a, b, h) - k * h * (1.0 - h);
 }
 
-float world_sub_1(vec3 pt, inout vec3 color)
-{
-    float ct = cos(T * 4.0);
-    float st = sin(T * 4.0);
-    float ct2 = cos(T * 0.75);
-
-    vec3 pry = rotate(pt, vec3(0.0, 0.5 * PI, 0.0));
-    vec3 prz = rotate(pt, vec3(0.0, 0.0, 0.5 * PI));
-
-    float cy = capsule(pry, vec3(0, 2.0, 0), vec3(0, -2.0, 0), 0.25);
-    float c3 = cylinder(prz, vec3(0, 0, 0.25));
-    float cz = capsule(pt, vec3(0, 0, -2.0), vec3(0, 0, 2.0), 0.25);
-    float c = max(blend(blend(cy, cz, 0.25), c3, 0.25), box(pt, vec3(ct * 0.5 + 2.0, 2.5, 2.5)));
-
-    vec3 pr = translate(pt, vec3(2.0 * ct2, 0.45 * (ct - st), 0.45 * (ct + st)));
-    vec3 pg = translate(pt, vec3(0.45 * (ct - st), 2.0 * ct2, 0.45 * (ct + st)));
-    vec3 pb = translate(pt, vec3(0.45 * (ct + st), 0.45 * (ct - st), 2.0 * ct2));
-    float sx = sphere(pr, 0.3);
-    float sy = sphere(pg, 0.3);
-    float sz = sphere(pb, 0.3);
-    float s = blend(blend(sx, sy, 0.25), sz, 0.25);
-
-    color += vec3(1.0, 1.0, 1.0) * max(vec3(c) - vec3(sx, sy, sz), vec3(0.0));
-    color = normalize(color);
-
-    return blend(c, s, 0.25);
-}
-
-float world_sub_2(vec3 pt, inout vec3 color)
-{
-    return sphere(pt, 0.5);
-}
-
+// p: sample position
 float world(vec3 p, inout vec3 color)
 {
-    float a = mod(T * 0.25, PI * 2.0);
-    vec3 pt = rotate(p, vec3(cos(T) * 0.1 - 0.2 * PI, a, 0));
+    #define CAMERA_ROTATION_SPEED 0.025
+    float a = mod(T * CAMERA_ROTATION_SPEED, PI * 2.0);
+    vec3 pt = rotate(p, vec3(-0.35, a, cos(T * 0.25) * 0.1));
 
-    float w1 = world_sub_1(pt, color);
-    float w2 = world_sub_2(pt, color);
-    return mix(
-        w1,
-        blend(w1, w2, 0.9),
-        cos(T * 2.0) * 0.5 + 0.5
-    );
+    #define TIME_SCALE_1 3.0
+    #define TIME_SCALE_2 0.25
+    float ct = cos(T * TIME_SCALE_1);
+    float st = sin(T * TIME_SCALE_1);
+    float ct2 = cos(T * TIME_SCALE_2);
+
+    #define CAPSULE_RAD 0.025
+    #define TILE_CAPSULES 2.0
+    #define FRAME_BLEND 0.1
+    #define FRAME_CLAMP FAR
+    vec3 tilept = tile(pt, vec3(TILE_CAPSULES));
+    float cx = capsule(tilept, vec3(-2.0, 0, 0), vec3(+2.0, 0, 0), CAPSULE_RAD);
+    float cy = capsule(tilept, vec3(0, +2.0, 0), vec3(0, -2.0, 0), CAPSULE_RAD);
+    float cz = capsule(tilept, vec3(0, 0, -2.0), vec3(0, 0, +2.0), CAPSULE_RAD);
+    float c = max(blend(blend(cy, cz, FRAME_BLEND), cx, FRAME_BLEND), box(pt, vec3(FRAME_CLAMP)));
+
+    #define GI_DIST 0.3
+    #define GI_BALL_RAD 0.125
+    #define GI_BALL_BLEND 0.85
+    #define GI_BALL_TRAVEL 2.5
+    vec3 pr = translate(pt, vec3(GI_BALL_TRAVEL * ct2, GI_DIST * (ct - st), GI_DIST * (ct + st)));
+    vec3 pg = translate(pt, vec3(GI_DIST * (ct - st), GI_BALL_TRAVEL * ct2, GI_DIST * (ct + st)));
+    vec3 pb = translate(pt, vec3(GI_DIST * (ct + st), GI_DIST * (ct - st), GI_BALL_TRAVEL * ct2));
+    float sx = sphere(pr, GI_BALL_RAD);
+    float sy = sphere(pg, GI_BALL_RAD);
+    float sz = sphere(pb, GI_BALL_RAD);
+    float sumball = min(min(sx, sy), sz);
+    float s = blend(blend(sx, sy, GI_BALL_BLEND), sz, GI_BALL_BLEND);
+
+    // add color from ball
+    #define GI_RADISANCE 0.15
+    color += max(vec3(GI_RADISANCE) * - log(vec3(sx, sy, sz)), vec3(0.0));
+
+    #define FRAME_BALL_BLEND 1.25
+    return blend(c, s, FRAME_BALL_BLEND);
 }
 
+// p: sample surface
 vec3 norm(vec3 p)
 {
     vec2 o = vec2(NRM_OFS, 0.0);
-    vec3 c = vec3(0);  // not used for normal calc
+    vec3 dump_c = vec3(0);
     return normalize(vec3(
-        world(p + o.xyy, c) - world(p - o.xyy, c),
-        world(p + o.yxy, c) - world(p - o.yxy, c),
-        world(p + o.yyx, c) - world(p - o.yyx, c)
+        world(p + o.xyy, dump_c) - world(p - o.xyy, dump_c),
+        world(p + o.yxy, dump_c) - world(p - o.yxy, dump_c),
+        world(p + o.yyx, dump_c) - world(p - o.yyx, dump_c)
     ));
 }
 
+// o: origin
+// r: ray
+// c: color
 float raymarch(vec3 o, vec3 r, inout vec3 c)
 {
     float t = 0.0;
-    vec3 p = vec3(0, 0, 0);
+    vec3 p = vec3(0);
     float d = 0.0;
-    for (int i = 0; i < MARCHING_STEPS; i++)
+    for (int i = MARCHING_MINSTEP; i < MARCHING_STEPS; i++)
     {
         p = o + r * t;
         d = world(p, c);
@@ -174,49 +198,66 @@ float raymarch(vec3 o, vec3 r, inout vec3 c)
     return FAR;
 }
 
-float ambient_occlusion(vec3 p, vec3 n, inout vec3 c)
+// o: surface
+// n: surface normal
+// d: depth
+float ambient_occlusion(vec3 p, vec3 n)
 {
-    return 1.0 - abs(world(p, c) - world(p + n, c));
+    #define STEP 0.06;
+    #define AO_ITER 5
+    float t = STEP;
+    float occusion = 0.0;
+    for(int i = 0; i < AO_ITER; i++)
+    {
+        vec3 dump_c = vec3(0);
+        float d = world(p + n * t, dump_c);
+        occusion += t - d;
+        t += STEP;
+    }
+    return 1.0 - clamp(occusion, 0.0, 1.0);
 }
 
 void main()
 {
-    vec3 o = vec3(0, 0, -7.0);
-    vec3 r = normalize(vec3(v_uv - 0.5, 1.001));
-    vec3 l = normalize(L);
-    vec3 c = vec3(1.0);
+    // o: origin
+    vec3 o = vec3(0, 1, -6.0);
 
+    // r: ray
+    vec3 r = normalize(vec3(v_uv - vec2(0.5 * aspect, 0.5), 1.001));
+
+    // l: light
+    vec3 l = normalize(L);
+
+    // c: albedo
+    vec3 c = vec3(0.0);
     float d = raymarch(o, r, c);
+
+    // pixel color
+    vec3 color = vec3(0);
     if (d < FAR)
     {
-        vec3 h = normalize(r + l);
-
         vec3 p = o + r * d;
         vec3 n = norm(p);
+        float ao = ambient_occlusion(p, n);
 
-        float ao = ambient_occlusion(p, n, c);
+        float lambert = dot(n, l);
+        lambert = mix(lambert, ao, 0.5);
+        lambert = clamp(lambert, 0.0, 1.0);
 
+        #define TOON_POWER 4.0
+        #define LAM_MIN 0.25
+        float toon = clamp(pow(2.0 * lambert, TOON_POWER), LAM_MIN, 1.0);
+
+        #define SPEC_COLOR vec3(0.85, 0.75, 0.5)
+        vec3 h = normalize(o + l);
         float ndh = clamp(dot(n, h), 0.0, 1.0);
+        float spec = pow(ndh + 0.05, 32.0) * 0.1;
 
-        float lambert = clamp(dot(n, l), 0.0, 1.0);
-        lambert = mix(lambert, 0.5, ao);
-
-        vec4 brdf = texture2D(BRDFTEX, vec2(mod(-lambert, 1.0), mod(-ndh, 1.0)));
-        gl_FragColor = vec4(brdf.xyz * c, 1.0);
-
-        /*
-        vec3 spec = vec3(pow(ndh, 4.0));
-        gl_FragColor = vec4(c * vec3(toon) + spec, 1.0);
-
-        gl_FragColor = vec4(
-            c * lambert + (rotate(n, vec3(mod(T, 2.0 * PI)))) * 0.02 + spec,
-            1.0
-        );
-        */
+        color = c * toon + SPEC_COLOR * spec;
     }
-    else
-    {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-    }
+
+    // add simple fog
+    color = mix(vec3(0.28, 0.35, 0.37), color, clamp(10.0 / d, 0.0, 1.0));
+    gl_FragColor = vec4(color, 1.0);
 }
 `;

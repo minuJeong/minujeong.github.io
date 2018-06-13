@@ -7,6 +7,11 @@ let scene = null;
 let camera = null;
 let clock = null;
 let defaultUniforms = {
+    aspect:
+    {
+        type: "f",
+        value: 1.0
+    },
     L: {
         type: "v3",
         value: new THREE.Vector3(-2, 3, -5)
@@ -39,6 +44,7 @@ function STAGE()
 
     scene = new THREE.Scene();
     let aspect = W / H;
+    defaultUniforms.aspect.value = aspect;
     camera = new THREE.OrthographicCamera(
         aspect * -0.5, aspect * 0.5,
         0.5, -0.5,
@@ -47,24 +53,14 @@ function STAGE()
     camera.position.z = 1.0;
 
     var mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(),
+        new THREE.PlaneGeometry(1.0 * aspect, 1.0),
         new THREE.ShaderMaterial({
             uniforms: defaultUniforms,
             vertexShader: vert,
             fragmentShader: frag,
         }));
     scene.add(mesh);
-
     stage.appendChild(renderer.domElement);
-    window.addEventListener("resize", ()=>
-    {
-        W = stage.clientWidth;
-        H = stage.clientHeight;
-        renderer.setSize(W, H);
-        camera.aspect = W / H;
-        camera.updateProjectionMatrix();
-    });
-
     clock = new THREE.Clock();
     animate();
 }
