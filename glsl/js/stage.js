@@ -25,6 +25,11 @@ let defaultUniforms = {
     {
         type: "v2",
         value: new THREE.Vector2(0, 0)
+    },
+    INPUT:
+    {
+        type: "v2",
+        value: new THREE.Vector2(0, 0)
     }
 };
 var frag =
@@ -38,14 +43,45 @@ void main()
 }
 `;
 
+let pressedKeys = [];
+
 function animate()
 {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    defaultUniforms.T.value += clock.getDelta();
+
+    let delta = clock.getDelta();
+    defaultUniforms.T.value += delta;
 
     defaultUniforms.M.value.x += (targetM.x - defaultUniforms.M.value.x) * 0.05;
     defaultUniforms.M.value.y += (targetM.y - defaultUniforms.M.value.y) * 0.05;
+
+    let input = new THREE.Vector2(0, 0);
+    for (var x of pressedKeys)
+    {
+        switch(x)
+        {
+            case "ArrowLeft":
+            case "a":
+                input.x -= 1;
+                break;
+            case "ArrowUp":
+            case "w":
+                input.y += 1;
+                break;
+            case "ArrowRight":
+            case "d":
+                input.x += 1;
+                break;
+            case "ArrowDown":
+            case "s":
+                input.y -= 1;
+                break;
+        }
+    }
+    input.normalize();
+    defaultUniforms.INPUT.value.x += input.x * delta;
+    defaultUniforms.INPUT.value.y += input.y * delta;
 }
 
 function STAGE()
@@ -91,4 +127,14 @@ function STAGE()
         targetM.x = 0.5 + (e.clientX / W) * 0.5;
         targetM.y = 0.5 + (e.clientY / H) * 0.5;
     }
+
+    document.addEventListener("keyup", (e)=>{
+        let i = pressedKeys.indexOf(e.key);
+        if (i > -1) { pressedKeys.splice(i, 1); }
+    });
+    document.addEventListener("keydown", (e)=>
+    {
+        let i = pressedKeys.indexOf(e.key);
+        if (i == -1) { pressedKeys.push(e.key); }
+    }); 
 }

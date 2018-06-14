@@ -28,6 +28,7 @@ uniform float aspect;
 uniform vec3 L;
 uniform float T;
 uniform vec2 M;
+uniform vec2 INPUT;
 
 varying vec2 v_uv;
 
@@ -107,12 +108,6 @@ float clamp_cylinder(vec3 p, vec3 c, vec3 b)
 {
     return max(cylinder(p, c), box(p, b));
 }
-
-float plane(vec3 p, float h)
-{
-    return abs(p.y - h);
-}
-
 // a: primitive a
 // b: primitive b
 // k: blending amount
