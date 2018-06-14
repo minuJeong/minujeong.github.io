@@ -99,9 +99,8 @@ function STAGE()
     camera = new THREE.OrthographicCamera(
         aspect * -0.5, aspect * 0.5,
         0.5, -0.5,
-        0.1, 100.0
+        -1.0, 1.0
     );
-    camera.position.z = 1.0;
 
     let quadGeo = new THREE.PlaneGeometry(1.0 * aspect, 1.0);
     let shaderMaterial = new THREE.ShaderMaterial({
