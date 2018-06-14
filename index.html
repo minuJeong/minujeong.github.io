@@ -1,18 +1,122 @@
-<html>
-<head>
+<html><head>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
+    <style type="text/css">
+        a,
+        a:link,
+        a:visited
+        {
+            color: #BBB;
+            text-decoration: none;
+        }
+
+        a:hover,
+        a:active
+        {
+            color: #EEE;
+            text-decoration: underline;
+        }
+
+        .email_contact
+        {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            padding: 10px;
+            border: 2px #888 solid;
+
+            transition: background-color 0.3s ease;
+        }
+
+        .gallery_category
+        {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border: 2px #888 solid;
+        }
+
+        .gallery_items_container
+        {
+            display: grid;
+            grid-row-gap: 10px;
+            grid-column-gap: 10px;
+            grid-template-columns: repeat(2, 320px);
+            grid-auto-rows: 350px;
+        }
+
+        .gallery_title
+        {
+            font-size: 18px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .gallery_item
+        {
+            padding: 7px;
+            border: 3px #555 solid;
+            text-align: center;
+
+            transition: background-color 0.3s ease;
+        }
+
+        .email_contact:hover,
+        .gallery_item:hover
+        {
+            background-color: #111;
+        }
+
+        .gallery_item_desc
+        {
+            font-size: 14px;
+            margin: 5px;
+        }
+    </style>
 </head>
-<body id="root" style="margin: 0px; background: linear-gradient(#202020, #606060); color: #EEEEEE;">
-    <div id="hello">
-        Hello?
+<body id="root" style="margin: 0px; background: linear-gradient(#222, #444); color: #EEEEEE;">
+    <div class="email_contact">
+        Contact: <a href="mailto://minu.hanwool@gmail.com">minu.hanwool@gmail.com</a>
     </div>
-</body>
-</html>
+
+    <div class="gallery_category">
+        <div class="gallery_title">
+            Raymarching Demos
+        </div>
+
+        <div class="gallery_items_container">
+            <a href="glsl/raymarch.html?frag=js/frag_cage.js">
+                <div class="gallery_item">
+                    <div>
+                        <img src="https://i.imgur.com/tSbnRXl.png" height="300" />
+                    </div>
+                    <div class="gallery_item_desc">
+                        Cage Demo
+                    </div>
+                </div>
+            </a>
+
+            <a href="glsl/raymarch.html?frag=js/frag_genheight.js">
+                <div class="gallery_item">
+                    <div class="gallery_item_desc">
+                        Generated Terrain Demo
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://shadertoy.com/view/XsGfW1">
+                <div class="gallery_item">
+                    <div>
+                        <img src="https://i.imgur.com/CcBt8No.png" height="300" />
+                    </div>
+                    <div class="gallery_item_desc">
+                        Shader forge
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</body></html>
 <script type="text/javascript">
-    anime({
-        targets: "#hello",
-        translateX: 200,
-        translateY: 200,
-        delay: 1000
-    });
 </script>

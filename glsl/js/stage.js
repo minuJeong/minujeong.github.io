@@ -27,6 +27,16 @@ let defaultUniforms = {
         value: new THREE.Vector2(0, 0)
     }
 };
+var frag =
+`
+float world(vec3 p)
+{ return length(p) - 0.5; }
+
+void main()
+{
+    gl_FragColor = vec4(0);
+}
+`;
 
 function animate()
 {
@@ -45,6 +55,7 @@ function STAGE()
         antialias: true
     });
     renderer.setSize(W, H);
+    stage.appendChild(renderer.domElement);
 
     scene = new THREE.Scene();
     let aspect = W / H;
@@ -56,15 +67,22 @@ function STAGE()
     );
     camera.position.z = 1.0;
 
-    var mesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.0 * aspect, 1.0),
-        new THREE.ShaderMaterial({
-            uniforms: defaultUniforms,
-            vertexShader: vert,
-            fragmentShader: frag,
-        }));
-    scene.add(mesh);
-    stage.appendChild(renderer.domElement);
+    let quadGeo = new THREE.PlaneGeometry(1.0 * aspect, 1.0);
+    let shaderMaterial = new THREE.ShaderMaterial({
+        uniforms: defaultUniforms,
+        vertexShader: basic_vert,
+        fragmentShader: frag_lib + window.frag,
+    });
+
+    let script = document.createElement("script");
+    script.src = new URL(window.location.href).searchParams.get("frag");
+    script.onload = (e)=>
+    {
+        shaderMaterial.fragmentShader = frag_lib + window.frag;
+        scene.add(new THREE.Mesh(quadGeo, shaderMaterial));
+    };
+    head.appendChild(script);
+
     clock = new THREE.Clock();
     animate();
 
