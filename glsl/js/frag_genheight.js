@@ -1,22 +1,25 @@
 
-// fragment shader
+//// fragment shader
+
 window.frag =
 `
+uniform float HEIGHT_SCALE;
 uniform sampler2D HEIGHT;
 
 vec3 albedo = vec3(0);
 
 // height base terrain
+// returns height
 float terrain(vec2 xz)
 {
-    if (max(abs(xz.x), abs(xz.y)) > 1.0)
+    xz = rotate(vec3(xz, 0.0), vec3(0, 0, mod(INPUT.x * 2.5, PI * 2.0) + 0.25 * PI)).xy;
+    if (abs(xz.x) > 1.0 || abs(xz.y) > 1.0)
     {
-        return 0.0;
+        return -10.0;
     }
 
-    xz = rotate(vec3(xz, 0.0), vec3(0, 0, mod(INPUT.x * 2.5, PI * 2.0))).xy;
-    vec4 th = texture2D(HEIGHT, mod((xz * 0.5) - vec2(1.5, 1.5), vec2(1.0)));
-    return (th.x + th.y + th.z) * 0.06;
+    vec4 th = texture2D(HEIGHT, xz * 0.5 + vec2(0.5, 0.5));
+    return (th.x + th.y + th.z) * HEIGHT_SCALE * 0.1;
 }
 
 // p: sample surface
@@ -36,19 +39,18 @@ vec3 surface_normal(vec3 p)
 float ray_terrain(vec3 o, vec3 r)
 {
     #define SEA_LEVEL 0.0
-    float delt = 0.003;
+    float delt = 0.006;
     float prev_h = 0.0;
     float prev_y = 0.0;
     float t = 0.0;
 
-    for (int i = 600; i < 1900; i++)
+    for (int i = 300; i < 850; i++)
     {
         vec3 p = o + r * t;
         float h = terrain(p.xz);
+
         if (p.y < h)
         {
-            albedo = h == 0.0 ? vec3(0, 0, 0.5) : vec3(0, 0.5, 0);
-
             float pd = prev_h - prev_y;
             return t - delt + delt * pd / (p.y - h + pd);
         }
@@ -62,28 +64,19 @@ float ray_terrain(vec3 o, vec3 r)
 
 void main()
 {
-    vec3 o = vec3(0, 3.0, -3.0);
+    vec3 o = vec3(0, 2.75, -2.25);
     vec3 r = normalize(vec3(v_uv - vec2(0.5 * aspect, 0.5), 1.01));
-    r = rotate(r, vec3(-0.75, 0, 0));
-    vec3 l = normalize(vec3(1, 2, 1));
-    l = rotate(l, vec3(0, mod(T * 2.5, PI * 2.0), 0));
+    r = rotate(r, vec3(-0.85, 0, 0));
+    vec3 l = normalize(vec3(1, 5, -2));
 
     vec3 color = vec3(0);
+    albedo = vec3(0.2);
     float d = ray_terrain(o, r);
     if (d < FAR)
     {
         vec3 n = surface_normal(o + r * d);
-        float ndl = clamp(dot(n, l), 0.0, 1.0);
-        vec3 lightColor = mix(
-            vec3(0.95, 0.93, 0.75),
-            vec3(0.75, 0.35, 0.85),
-            ndl
-        ) * 0.2;
-        color = albedo * ndl + lightColor;
-    }
-    else
-    {
-        color = vec3(0.5, 0, 1);
+        float ndl = dot(n, l);
+        color = albedo * clamp(pow(ndl, 0.25), 0.0, 1.0);
     }
 
     // add simple fog
@@ -96,41 +89,44 @@ void main()
 }
 `;
 
+
+//// compute shader
+
 // terrain height simulation with compute shader
 // run once, it's ok to be a little heavy
 const SEED_WH = 128;
-const SIM_WH = 1024;
+const SIM_WH = 4096;
 let simProgram =
 `
-vec3 normal(vec2 xz)
+
+// convert vec4 to uvec4 for texture format
+uvec4 texturize(vec4 p)
 {
-    #define e vec2(0.004, 0.0)
-    return vec3(
-        texture(in_buff, xz + e.xy).x - texture(in_buff, xz - e.xy).x,
-        2.0 * e.x,
-        texture(in_buff, xz + e.yx).x - texture(in_buff, xz - e.yx).x
-    );
-}
-
-void main()
-{
-    // vec4 c = texture(in_buff, bl_UV);
-    // vec3 n = normal(bl_UV);
-    // vec4 color = vec4(c.xyz, 1.0);
-
-    float d = length(bl_UV - vec2(0.5));
-    vec4 color = vec4(bl_UV / abs(0.5 - d), d, 1.0);
-
-    // convert vec4 to uvec4 for texture format
-    vec4 out_channel = clamp(color, 0.0, 1.0) * 256.0;
-    out_buff = uvec4(
+    vec3 np = normalize(p.xyz);
+    vec4 out_channel = clamp(vec4(np, p.w), 0.0, 1.0) * 256.0;
+    return uvec4(
         uint(out_channel.x),
         uint(out_channel.y),
         uint(out_channel.z),
         uint(out_channel.w)
     );
 }
+
+void main()
+{
+    float dist_from_center = length(bl_UV - vec2(0.5)) / 2.0;
+
+    float d = 0.25 - dist_from_center;
+
+    vec4 color = vec4(0);
+    color = vec4(d, 0, 0, 1.0);
+
+    out_buff = texturize(color);
+}
 `;
+
+
+//// JS
 
 let guide = new blink.Buffer({
     alloc: SEED_WH * SEED_WH,
@@ -170,19 +166,45 @@ defaultUniforms.HEIGHT = {
     type: "t",
     value: dataTexture
 };
+defaultUniforms.HEIGHT_SCALE = {
+    type: "f",
+    value: 1.0
+};
 
-// HACK: preview heightmap in canvas
+document.addEventListener("wheel", (e)=>
+{
+    defaultUniforms.HEIGHT_SCALE.value *= e.deltaY < 0.0 ? 1.1 : 0.9;
+});
+
+
+//// quick add preview canvas
+const PREVIEW_RES = 200;
+let imgDat = new ImageData(PREVIEW_RES, PREVIEW_RES);
 let heightPreview = document.createElement("canvas");
-heightPreview.style.width = 150;
-heightPreview.style.height = 150;
+heightPreview.style.width = PREVIEW_RES;
+heightPreview.style.height = PREVIEW_RES;
 heightPreview.style.left = 20;
 heightPreview.style.top = 20;
 heightPreview.style.zIndex = 1;
 heightPreview.style.background = "#202020";
 heightPreview.style.position = "fixed";
 
-let ctx = heightPreview.getContext('2d');
-let imgDat = ctx.getImageData(0, 0, SIM_WH, SIM_WH);
-imgDat.data.set(buffer.data);
-ctx.putImageData(imgDat, 0, 0);
+// scale down simulated height map to preview size
+for(let x = 0; x < PREVIEW_RES; x++)
+{
+    let rx = x / PREVIEW_RES;
+    let sx = Math.floor(rx * SIM_WH);
+    for (let y = 0; y < PREVIEW_RES; y++)
+    {
+        let ry = y / PREVIEW_RES;
+        let sy = Math.floor(ry * SIM_WH);
+
+        imgDat.data[(y + x * PREVIEW_RES) * 4 + 0] = buffer.data[(sy + sx * SIM_WH) * 4 + 0];
+        imgDat.data[(y + x * PREVIEW_RES) * 4 + 1] = buffer.data[(sy + sx * SIM_WH) * 4 + 1];
+        imgDat.data[(y + x * PREVIEW_RES) * 4 + 2] = buffer.data[(sy + sx * SIM_WH) * 4 + 2];
+        imgDat.data[(y + x * PREVIEW_RES) * 4 + 3] = buffer.data[(sy + sx * SIM_WH) * 4 + 3];
+    }
+}
+
+heightPreview.getContext('2d').putImageData(imgDat, 0, 0);
 stage.appendChild(heightPreview);
