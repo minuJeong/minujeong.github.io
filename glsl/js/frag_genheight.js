@@ -19,7 +19,7 @@ float terrain(vec2 xz)
     }
 
     vec4 th = texture2D(HEIGHT, xz * 0.5 + vec2(0.5, 0.5));
-    return (th.x + th.y + th.z) * HEIGHT_SCALE * 0.1;
+    return th.x * HEIGHT_SCALE * 0.3;
 }
 
 // p: sample surface
@@ -44,7 +44,7 @@ float ray_terrain(vec3 o, vec3 r)
     float prev_y = 0.0;
     float t = 0.0;
 
-    for (int i = 300; i < 850; i++)
+    for (int i = 200; i < 850; i++)
     {
         vec3 p = o + r * t;
         float h = terrain(p.xz);
@@ -95,15 +95,14 @@ void main()
 // terrain height simulation with compute shader
 // run once, it's ok to be a little heavy
 const SEED_WH = 128;
-const SIM_WH = 4096;
+const SIM_WH = 2048;
 let simProgram =
 `
 
 // convert vec4 to uvec4 for texture format
 uvec4 texturize(vec4 p)
 {
-    vec3 np = normalize(p.xyz);
-    vec4 out_channel = clamp(vec4(np, p.w), 0.0, 1.0) * 256.0;
+    vec4 out_channel = clamp(vec4(p.xyz, p.w), 0.0, 1.0) * 256.0;
     return uvec4(
         uint(out_channel.x),
         uint(out_channel.y),
@@ -114,12 +113,23 @@ uvec4 texturize(vec4 p)
 
 void main()
 {
-    float dist_from_center = length(bl_UV - vec2(0.5)) / 2.0;
+    float d = 0.0;
+    float x = 0.0;
+    float y = 0.0;
+    for (float a = 3.1415 * 2.0; a >= 0.0 ; a -= 0.02)
+    {
+        x = 0.5;
+        y = 0.5;
 
-    float d = 0.25 - dist_from_center;
+        if (abs(bl_UV.x - x) > abs(bl_UV.y - y))
+        {
+            d = 1.0;
+            break;
+        }
+    }
 
     vec4 color = vec4(0);
-    color = vec4(d, 0, 0, 1.0);
+    color = vec4(d, 0.1, 0.1, 1.0);
 
     out_buff = texturize(color);
 }
