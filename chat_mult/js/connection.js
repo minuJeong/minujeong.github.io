@@ -1,11 +1,13 @@
 let ADDR_OPENSHFIT = "ws://posync-pywebsocket-posync.7e14.starter-us-west-2.openshiftapps.com/:8080/";
-let ADDR_LOCAL = "ws://localhost:8080/";
+// let ADDR_LOCAL = "ws://localhost:8080/";
+let ADDR_LOCAL = "ws://10.196.12.31:8080/";
+
 let SOCKET = null;
 let WSCONNEVENT = new EventTarget();
 let WSCONN = async(addr = ADDR_OPENSHFIT) =>
 {
-    let uuid = uuidv4();
-    let userid = "user_" + uuid;
+    let userid = uuidv4();
+    console.log(userid);
 
     function uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
