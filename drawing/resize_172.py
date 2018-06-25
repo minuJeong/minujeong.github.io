@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 
-TARGET_RES = 192
+TARGET_RES = 172
 for root, dirs, files in os.walk("./"):
     if root.startswith("_"):
         continue
