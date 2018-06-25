@@ -66,6 +66,32 @@
             grid-auto-rows: auto;
         }
 
+        .gallery_drawings_container
+        {
+            display: grid;
+            grid-row-gap: 10px;
+            grid-column-gap: 10px;
+            grid-template-columns: repeat(5, 192px);
+            grid-auto-rows: auto;
+        }
+
+        .gallery_drawing_item
+        {
+            padding: 7px;
+            border: 3px #555 solid;
+            text-align: center;
+
+            height: 282px;
+
+            transition: background-color 0.3s ease;
+        }
+
+        .gallery_drawing_img
+        {
+            max-height: 192px;
+            max-width: 192px;
+        }
+
         .gallery_title
         {
             font-size: 18px;
@@ -247,19 +273,17 @@
             <div class="gallery_title">
                 Drawing
             </div>
-            <div class="gallery_drawings">
-                <div class="gallery_items_container">
-                    <a href="drawing/show_drawing.html">
-                        <div class="gallery_item">
-                            <div>
-                                <img src="drawing/1/fdsay.jpg" style="max-height: 300px; max-width: 300px;" />
-                            </div>
-                            <div class="gallery_item_desc">
-                                Page 1
-                            </div>
+            <div class="gallery_drawings_container">
+                <a href="drawing/show_drawing.html">
+                    <div class="gallery_drawing_item">
+                        <div>
+                            <img src="drawing/1/fdsay.jpg" class="gallery_drawing_img" />
                         </div>
-                    </a>
-                </div>
+                        <div class="gallery_item_desc">
+                            Page 1
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
 
@@ -358,7 +382,8 @@
                         <div class="gallery_item_desc">
                             <h3>Simple web socket</h3>
                             <p>
-                                Getting started with python web socket
+                                Getting started with python web socket<br>
+                                Requires to have gamepad.
                             </p>
                         </div>
                     </div>
