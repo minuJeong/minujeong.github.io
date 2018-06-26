@@ -5,7 +5,7 @@ from PIL import Image
 
 TARGET_RES = 172
 for root, dirs, files in os.walk("./"):
-    if root.startswith("_"):
+    if "_" in root:
         continue
 
     for filename in files:
