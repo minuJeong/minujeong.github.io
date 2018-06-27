@@ -323,7 +323,7 @@
     </div>
 
     <div class="gallery_category">
-        <div class="gallery_title">`
+        <div class="gallery_title">
             Game Jams
         </div>
         <div class="gallery_items_container">
@@ -446,6 +446,7 @@
             newimg.classList.add("overlay_drawing_img");
             newimg.src = drawingItem.dataset.bigurl;
             newimg.style.maxWidth = newimg_container.clientWidth;
+            newimg.style.maxHeight = newimg_container.clientHeight;
             newimg.style.opacity = 1;
 
             anime({
