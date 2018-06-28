@@ -319,11 +319,27 @@
             <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/3eTqe7j.png">
             <img src="https://i.imgur.com/QD3M3LN.png" class="gallery_drawing_img" />
             </div>
+
+            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/GXFOR5l.png">
+            <img src="https://i.imgur.com/vByGtUj.png" class="gallery_drawing_img" />
+            </div>
+
+            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/oMrslO9.gif">
+            <img src="https://i.imgur.com/xWNhOxk.jpg" class="gallery_drawing_img" />
+            </div>
+
+            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/FkvfvvM.jpg">
+            <img src="https://i.imgur.com/UlJzHJG.jpg" class="gallery_drawing_img" />
+            </div>
+
+            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/mmdXUif.jpg">
+            <img src="https://i.imgur.com/GJTITBw.jpg" class="gallery_drawing_img" />
+            </div>
         </div>
     </div>
 
     <div class="gallery_category">
-        <div class="gallery_title">`
+        <div class="gallery_title">
             Game Jams
         </div>
         <div class="gallery_items_container">
@@ -446,6 +462,7 @@
             newimg.classList.add("overlay_drawing_img");
             newimg.src = drawingItem.dataset.bigurl;
             newimg.style.maxWidth = newimg_container.clientWidth;
+            newimg.style.maxHeight = newimg_container.clientHeight;
 
             anime({
                 targets: newimg,
