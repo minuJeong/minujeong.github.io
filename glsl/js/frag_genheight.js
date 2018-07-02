@@ -1,4 +1,9 @@
 
+/*
+Compatibility: https://github.com/frzi/blinkjs/blob/master/COMPATIBILITY.md
+Author: Minu Jeong
+*/
+
 //// fragment shader
 
 window.frag =
