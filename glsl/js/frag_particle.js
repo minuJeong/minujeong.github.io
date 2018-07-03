@@ -54,10 +54,17 @@ console.log(b_pos);
 console.log(b_vel);
 console.log(bo_pos);
 
+defaultUniforms.posBuffer = {
+    bo_pos
+};
+console.log(defaultUniforms);
+
 window.frag = `
+
+layout(std140) posBuffer;
 
 void main()
 {
-    gl_FragColor = vec4(0, 0, 0, 0);
+    gl_FragColor = vec4(0.5, 0, 0, 1.0);
 }
 `;
