@@ -81,10 +81,10 @@ void main()
         lambert = clamp(lambert, 0.0, 1.0);
 
         #define SPEC_COLOR vec3(0.95, 0.95, 0.95)
-        vec3 h = normalize(o + l);
+        vec3 h = normalize(l - r);
         float ndh = clamp(dot(n, h), 0.0, 1.0);
         float ndv = clamp(dot(n, -o), 0.0, 1.0);
-        float spec = pow((ndh + ndv) + 0.01, 256.0) * 0.05;
+        float spec = pow(ndh + ndv, 128.0) * 2.0;
 
         color = c * lambert + SPEC_COLOR * spec;
     }
@@ -149,7 +149,7 @@ void main()
     )
 
     let ii = 0.0
-    defaultUniforms.L.value.y = 10.0
+    defaultUniforms.L.value.y = 50.0
     defaultUniforms.L.value.z = -20.0
     defaultUniforms.G = {
         type: 't',
