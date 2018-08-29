@@ -45,6 +45,8 @@ void main()
 
 let pressedKeys = [];
 
+function postAnimate() {}
+
 function animate()
 {
     requestAnimationFrame(animate);
@@ -82,6 +84,8 @@ function animate()
     input.normalize();
     defaultUniforms.INPUT.value.x += input.x * delta;
     defaultUniforms.INPUT.value.y += input.y * delta;
+
+    postAnimate();
 }
 
 function STAGE()
