@@ -9,12 +9,48 @@ struct Material
 
 void pelvis(inout vec3 p, inout Material m, inout float d)
 {
+    float s1 = blend(
+            blend(
+                sphere(p - vec3(-0.15, 0, 0.05), 0.12),
+                sphere(p - vec3(-0.15, -0.06, -0.05), 0.08),
+                0.1
+            ),
+            blend(
+                sphere(p - vec3(-0.22, 0.32, 0.08), 0.1),
+                sphere(p - vec3(-0.19, 0.26, -0.04), 0.1),
+                0.1
+            ),
+            0.15
+        );
+    float s2 = blend(
+            blend(
+                sphere(p - vec3(+0.15, 0, 0.05), 0.12),
+                sphere(p - vec3(+0.15, -0.06, -0.05), 0.08),
+                0.1
+            ),
+            blend(
+                sphere(p - vec3(+0.22, 0.32, 0.08), 0.1),
+                sphere(p - vec3(+0.19, 0.26, -0.04), 0.1),
+                0.1
+            ),
+            0.15
+        );
 
+    float r = blend(s1, s2, 0.2);
+    float frq = 80.0;
+    r += cos(p.x * frq) * cos(p.y * frq) * cos(p.z * frq) * 0.002;
+
+    if (r < MARCHING_CLAMP)
+    {
+        m.diffuse_color = vec3(0.98, 0.22, 0.82);
+        m.specular_intensity = 2.5;
+    }
+    d = min(d, r);
 }
 
 void spine(inout vec3 p, inout Material m, inout float d)
 {
-    #define NUM_SPINES 8
+    #define NUM_SPINES 7
     #define SPINE_ANGLE_STEP 0.08
     #define SPINE_DIST_STEP vec3(0.0, 0.17, 0.0)
     #define SPINE_ANGLE_INIT -0.4
@@ -27,12 +63,13 @@ void spine(inout vec3 p, inout Material m, inout float d)
     {
         x_angle += SPINE_ANGLE_STEP;
 
-        p = translate(
-            p, rotate(SPINE_DIST_STEP, vec3(x_angle, 0.0, 0.0))
-        );
+        vec3 rp = rotate(SPINE_DIST_STEP, vec3(x_angle, 0.0, 0.0));
+        vec3 tp = translate(p, rp);
+        p = tp;
 
+        float displacement = cos(rotate(p, vec3(-x_angle, 0, 0)).y * 100.0) * 0.01;
         r = blend(
-            sphere(p, SPINE_RADIUS),
+            sphere(p, SPINE_RADIUS) + displacement,
             r,
             SPINE_BLENDER
         );
@@ -48,17 +85,24 @@ void spine(inout vec3 p, inout Material m, inout float d)
 
 void rib(inout vec3 p, inout Material m, inout float d)
 {
+    p += vec3(0, -0.1, 0);
     vec3 right_rib_pos = translate(p, vec3(+0.18, -0.15, -0.124));
     vec3 left_rib_pos = translate(p, vec3(-0.18, -0.15, -0.124));
 
+    #define DISP_FREQ 60.0
+    #define DISP_SCL 0.01
+
+    vec3 rp_r = rotate(p, vec3(0, 0, PI * -0.25));
+    vec3 lp_r = rotate(p, vec3(0, 0, PI * +0.25));
+
     float right_rib_dist = blend(
-            sphere(right_rib_pos, 0.16),
-            sphere(right_rib_pos - vec3(+0.03, -0.46, 0.03), 0.08),
+            sphere(right_rib_pos, 0.16) + sin(rp_r.y * DISP_FREQ) * DISP_SCL,
+            sphere(right_rib_pos - vec3(+0.03, -0.48, 0.03), 0.08),
             0.6
         );
     float left_rib_dist = blend(
-            sphere(left_rib_pos, 0.16),
-            sphere(left_rib_pos - vec3(-0.03, -0.46, 0.03), 0.08),
+            sphere(left_rib_pos, 0.16) + sin(lp_r.y * DISP_FREQ) * DISP_SCL,
+            sphere(left_rib_pos - vec3(-0.03, -0.48, 0.03), 0.08),
             0.6
         );
 
@@ -88,6 +132,7 @@ void clavicle(inout vec3 p, inout Material m, inout float d)
         0.42);
 
     float cd = min(rcd, lcd);
+    cd = cd + displace(p, 120.0, 0.001);
 
     if (cd < MARCHING_CLAMP)
     {
