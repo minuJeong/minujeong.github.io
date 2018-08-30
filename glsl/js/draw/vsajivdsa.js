@@ -207,6 +207,11 @@ float raymarch(vec3 o, vec3 r, inout Material m)
 
 void main()
 {
+    if (length(vec2(0.5 * aspect, 0.5) - v_uv.xy) > 0.4)
+    {
+        discard;
+    }
+
     float rotation = T * 0.15 + INPUT.x * 4.0;
 
     // o: origin
