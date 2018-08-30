@@ -152,11 +152,11 @@ void body(inout vec3 p, inout Material m, inout float d)
 }
 
 // p: sample position
-float world(vec3 p, inout Material m)
+float world(vec3 p, inout Material m, inout float d)
 {
     // floor
     vec3 floor_pos = translate(p, vec3(0.0, -1.0, 0.0));
-    float d = box(floor_pos, vec3(5.0, 0.1, 5.0));
+    d = box(floor_pos, vec3(5.0, 0.1, 5.0));
     if (d < MARCHING_CLAMP)
     {
         m.specular_intensity = 0.0;
@@ -166,6 +166,7 @@ float world(vec3 p, inout Material m)
     // body
     body(p, m, d);
 
+    // returns for normal
     return d;
 }
 
@@ -175,10 +176,11 @@ vec3 norm(vec3 p)
     Material m;
 
     vec2 o = vec2(NRM_OFS, 0.0);
+    float d;
     return normalize(vec3(
-        world(p + o.xyy, m) - world(p - o.xyy, m),
-        world(p + o.yxy, m) - world(p - o.yxy, m),
-        world(p + o.yyx, m) - world(p - o.yyx, m)
+        world(p + o.xyy, m, d) - world(p - o.xyy, m, d),
+        world(p + o.yxy, m, d) - world(p - o.yxy, m, d),
+        world(p + o.yyx, m, d) - world(p - o.yyx, m, d)
     ));
 }
 
@@ -193,7 +195,7 @@ float raymarch(vec3 o, vec3 r, inout Material m)
     for (int i = MARCHING_MINSTEP; i < MARCHING_STEPS; i++)
     {
         p = o + r * t;
-        d = world(p, m);
+        world(p, m, d);
         if (abs(d) < MARCHING_CLAMP)
         {
             return t;
