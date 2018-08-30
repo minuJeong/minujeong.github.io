@@ -4,7 +4,22 @@ window.frag =
 // p: sample position
 float world(vec3 p, inout vec3 color)
 {
-    return sphere(p, 1.0);
+    float b = box(
+        rotate(
+            translate(p, vec3(0.85, 0.0, 0.0)),
+            vec3(cos(T * 1.5) * PI, 0, PI * 0.25)
+        ),
+        vec3(0.5)
+    );
+
+    float s = sphere(
+        translate(p, vec3(-0.5, 0.0, 0.0)),
+        1.0
+    );
+
+    float bs = blend(s, b, 0.2);
+
+    return bs;
 }
 
 // p: sample surface
@@ -66,10 +81,10 @@ void main()
         lambert = clamp(lambert, 0.0, 1.0);
 
         #define SPEC_COLOR vec3(0.95, 0.95, 0.95)
-        vec3 h = normalize(o + l);
+        vec3 h = normalize(l - r);
         float ndh = clamp(dot(n, h), 0.0, 1.0);
         float ndv = clamp(dot(n, -o), 0.0, 1.0);
-        float spec = pow((ndh + ndv) + 0.01, 64.0) * 0.25;
+        float spec = pow(ndh + ndv, 128.0) * 2.0;
 
         color = c * lambert + SPEC_COLOR * spec;
     }
@@ -86,38 +101,63 @@ void main()
 window.postfx = `
 uniform sampler2D G;
 
+vec3 c;
+float count;
+float offsetX;
+float offsetY;
+
 void main()
 {
-    vec3 c = texture2D(G, v_uv.xy).xyz;
-    gl_FragColor = vec4(c.xyz, 1.0);
+    vec2 uv = v_uv.xy;
+    uv.x /= aspect;
+
+    #define UV_OFFSET_STEP 0.002
+    #define UV_OFFSET_MAX  0.01
+
+    for (float i = UV_OFFSET_STEP; i < UV_OFFSET_MAX; i += UV_OFFSET_STEP)
+    {
+        offsetX = i;
+        offsetY = i * aspect;
+
+        c += texture2D(G, uv + vec2(offsetX, 0.0)).xyz
+           + texture2D(G, uv - vec2(offsetX, 0.0)).xyz
+           + texture2D(G, uv + vec2(0.0, offsetY)).xyz
+           + texture2D(G, uv - vec2(0.0, offsetY)).xyz
+           + texture2D(G, uv + vec2(offsetX, offsetY)).xyz
+           + texture2D(G, uv + vec2(-offsetX, offsetY)).xyz
+           + texture2D(G, uv + vec2(offsetX, -offsetY)).xyz
+           + texture2D(G, uv + vec2(-offsetX, -offsetY)).xyz;
+        count += 8.0;
+    }
+
+    c /= count;
+
+    c *= vec3(0.88, 0.85, 1.26);
+
+    float r = smoothstep(0.3, 0.5, (v_uv.y + (v_uv.x / aspect) * 8.0 - 3.5));
+
+    gl_FragColor = vec4(
+        mix(c.xyz, texture2D(G, uv).xyz, r).xyz,
+        1.0
+    );
 }
 `;
 
 (()=>{
     let renderBuffer = new THREE.CanvasTexture(
-        canvas=renderer.domElement,
-        magFilter=THREE.LinearFilter,
-        minFilter=THREE.LinearFilter,
+        canvas=renderer.domElement
     )
 
-    let postfxRenderer = new THREE.WebGLRenderer({
-        alpha: true,
-        antialias: true
-    })
-    postfxRenderer.setSize(W, H)
-    stage.appendChild(postfxRenderer.domElement)
-    let pfxScene = new THREE.Scene()
-
     let ii = 0.0
-    defaultUniforms.L.value.y = 10.0
+    defaultUniforms.L.value.y = 50.0
     defaultUniforms.L.value.z = -20.0
     defaultUniforms.G = {
         type: 't',
         value: renderBuffer
     }
 
-    pfxScene.add(new THREE.Mesh(
-        new THREE.PlaneGeometry(2, 2, 1, 1),
+    scene.add(new THREE.Mesh(
+        new THREE.PlaneGeometry(W / H, 1.0),
         new THREE.ShaderMaterial({
             uniforms: defaultUniforms,
             vertexShader: basic_vert,
@@ -125,21 +165,13 @@ void main()
         })
     ))
 
-    let aspect = W / H
-    let pfxCamera = new THREE.OrthographicCamera(
-        aspect * -0.5, aspect * 0.5,
-        0.5, -0.5,
-        -1.0, 1.0
-    )
-
     postAnimate = () => {
         ii += 0.1;
 
         let x = defaultUniforms.L.value.x
-        x = Math.cos(ii) * 20.0
+        x = Math.cos(ii) * 40.0
         defaultUniforms.L.value.x = x
+
         renderBuffer.needsUpdate = true
-        
-        postfxRenderer.render(pfxScene, pfxCamera)
     }
 })()
