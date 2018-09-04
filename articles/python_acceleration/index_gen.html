@@ -1,0 +1,1292 @@
+
+<html><head><title> Acceleated Python </title>
+<link rel="stylesheet" type="text/css" href="slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="slick/slick-theme.css"/>
+<link rel="stylesheet" href="presentation/css/presentation.css">
+<link rel="stylesheet" href="res/css/railscasts.min.css">
+<script src="res/js/highlight.min.js" type="text/javascript" charset="utf-8" async defer></script>
+<script src="res/js/jquery.min.js"></script>
+<script src="slick/slick.min.js" type="text/javascript"></script>
+</head><body>
+<div class="root">
+    <div class="slick_main_slide">
+<div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="main-title">
+    Accelerated Python
+</div>
+
+<h3 style="
+margin-top: 120px;
+text-align: center;
+">
+    Minu Jeong
+</h3>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<h3 style="
+margin-top: 300px;
+text-align: center;
+">
+    Benchmark here can be vary from various versions and situations. Just look at the numbers as proof of concept, not as budget reference for existing projects.
+</h3>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Content
+</div>
+
+<div>
+<p> Heads Up </p>
+<p> Better/Faster Python </p>
+<p> Numpy, PyCuda, Cupy, Tensorflow </p>
+<p> Optimize </p>
+<p> Compute Shader </p>
+<p> Q&A </p>
+</div>
+
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Benefit of Python
+</div>
+
+<div>
+    <p> Interpreted language (No compile) </p>
+    <p> Faster iteration </p>
+    <p> Compatibility </p>
+    <p> Easy </p>
+    <p> Less mistakes for less trained coders </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Concern of using Python
+</div>
+
+<div>
+    <p> Slow </p>
+    <p> Hardware accessibiilty </p>
+    <p> Security (when client side) </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Why is it so slow?
+</div>
+
+<div>
+    <p> Interpretation </p>
+    <p> Interpreter lock </p>
+    <p> No primitives </p>
+    <p> No forced typing </p>
+    <p> Implicit processing </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    So, what should I do?
+</div>
+
+<div>
+    <p> Accept it, let your application slow </p>
+    <p> Solve with hardwares (better CPU, more servers, etc) </p>
+    <p> Use other languages </p>
+    <p> C/C++/C# is fast, C# is even easy, too </p>
+    <p> Java is faster, although with it's infamous VM </p>
+    <p> Even JavaScript is faster, with VM and duck typing </p>
+    <p> Ruby could be faster in certain situations </p>
+    <p> ... </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Or..
+</div>
+
+<div>
+    <p> Write efficient code, Usually it will be enough </p>
+    <p> Use faster Python: Cython, Stackless, PyPy, etc </p>
+    <p> Use C/C++ wrapping: Numpy or custom </p>
+    <p> ... </p>
+    <p style="font-weight: bold;"> Use GPU </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Better Python
+</div>
+
+<div>
+    <p> Efficient code? What does it means? </p>
+    <p> Use efficient algorithm. Mind the O-complexity </p>
+    <p> Generally good for other languages are usually good for Python, too. </p>
+    <p> Use Pythonic code </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 120px;
+">
+
+<div>
+    <img src='res/bigochart.png' height="585" style="margin: auto;">
+    <p style="margin: auto; text-align: center;"> http://bigocheatsheet.com/ </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code class="python">
+# cache
+
+import timeit
+import random
+
+def non_cached():
+    count = 0
+    for _ in range(50):
+        a = [None] * random.randrange(1, 50)
+        if len(a) > 15:
+            count += len(a)
+    return count
+
+def cached():
+    count = 0
+    for _ in range(50):
+        a = [None] * random.randrange(1, 50)
+        len_a = len(a)
+        if len_a > 15:
+            count += len_a
+    return count
+
+print(
+    timeit.timeit(non_cached, number=10000),
+    timeit.timeit(cached, number=10000)
+)
+
+non_cached: 0.6148
+cached: 0.5750
+</code></pre></div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code class="python">
+# string concat
+
+import timeit
+
+user = "minu"
+
+def concatenated():
+    return "Hello, " + user + "!"
+
+def formatted():
+    return f"Hello, {user}!"
+
+print(
+    timeit.timeit(concatenated),
+    timeit.timeit(formatted)
+)
+
+concat: 0.1617
+format: 0.1458
+</code></pre></div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code class="python">
+# builtin
+
+from functools import partial
+import timeit
+
+a = [x for x in range(100000)]
+def pysum_list(t):
+    sum_x = 0
+    for x in t:
+        sum_x += x
+    return x
+
+print(
+    timeit.timeit(partial(pysum_list, a), number=1000),
+    timeit.timeit(partial(sum, a), number=1000)
+)
+
+custom: 3.8897
+builtin: 1.3365
+</code></pre></div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code class="python">
+# function call overhead
+
+import timeit
+
+summed_1 = 0
+summed_2 = 0
+
+def calc1(item):
+    global summed_1
+    summed_1 += item
+
+def calc2(container):
+    global summed_2
+    for i in container:
+        summed_2 += i
+
+print(
+    timeit.timeit(
+        lambda: [calc1(i) for i in range(10)],
+        number=1000000
+    ),
+    timeit.timeit(
+        lambda: calc2([i for i in range(10)]),
+        number=1000000
+    ),
+)
+
+calc1: 1.9375
+calc2: 1.3911
+</code></pre></div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+">
+
+<div class="common-title">
+    Faster Python
+</div>
+
+<div>
+    <p> Cython </p>
+    <p> Stackless Python </p>
+    <p> PyPy </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+">
+
+<div class="common-title">
+    Cython
+</div>
+
+<div>
+    <p> Different from C-Python </p>
+    <p> Compile Python to C </p>
+    <p> Lift limitation of interpreted language </p>
+    <p> Need to be compiled </p>
+    <p> Can use pure Python </p>
+</div>
+</div>
+</div><div class='slide-content'><div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+">
+
+<div class="common-title">
+    Stackless Python
+</div>
+
+<div>
+    <p> Decouples Python code from C stack </p>
+    <p> Allow you to use green threads instead of system threads </p>
+    <p> Solution for massive concurrency </p>
+    <p> Picklable tasklets </p>
+    <p> Awaits IO system call, network packets, etc with only one tasklet </p>
+    <p> Turing machine and real world </p>
+</div>
+</div></div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code class="python">
+# without stackless python
+
+def ping():
+    print("ping")
+    pong()
+
+def pong():
+    print("pong")
+    ping()
+
+ping()
+</code></pre>
+<p> https://www.grant-olson.net/ </p>
+</div>
+</div>
+</div><div class='slide-content'><div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+">
+
+<div class="common-title">
+    Stackless Python - before
+</div>
+
+<div>
+    <table style="font-size: 24; width: 100%;">
+        <tr>
+            <th> Frame </th>
+            <th style="text-align: center;"> Stack </th>
+        </tr>
+        <tr>
+            <th> 1 </th>
+            <th style="text-align: left;">
+                ping ->
+            </th>
+        </tr>
+        <tr>
+            <th> 2 </th>
+            <th style="text-align: left;">
+                ping -> pong ->
+            </th>
+        </tr>
+        <tr>
+            <th> 3 </th>
+            <th style="text-align: left;">
+                ping -> pong -> ping ->
+            </th>
+        </tr>
+        <tr>
+            <th> 4 </th>
+            <th style="text-align: left;">
+                ping -> pong -> ping -> pong ->
+            </th>
+        </tr>
+        <tr>
+            <th> 5 </th>
+            <th style="text-align: left;">
+                ping -> pong -> ping -> pong -> ping -> 
+            </th>
+        </tr>
+        <tr>
+            <th> 6 </th>
+            <th style="text-align: left;">
+                ping -> pong -> ping -> pong -> ping -> pong ->
+            </th>
+        </tr>
+        <tr>
+            <th> ... </th>
+            <th style="text-align: left;"> ... </th>
+        </tr>
+        <tr>
+            <th> ... </th>
+            <th style="text-align: left; color: #D77;"> STACK OVERFLOW! </th>
+        </tr>
+    </table>
+</div>
+</div></div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code class="python">
+# with stackless python
+
+import stackless
+
+
+ping_channel = stackless.channel()
+pong_channel = stackless.channel()
+
+def ping():
+    while ping_channel.receive():
+        print("ping")
+        pong_channel.send('from ping')
+def pong():
+    while pong_channel.receive():
+        print("pong")
+        ping_channel.send('from pong')
+
+stackless.tasklet(ping)()
+stackless.tasklet(pong)()
+stackless.tasklet(ping_channel.send)('start')
+stackless.run()
+</code></pre>
+<p> https://www.grant-olson.net/ </p>
+</div>
+</div>
+</div><div class='slide-content'><div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+">
+
+<div class="common-title">
+    Stackless Python - after
+</div>
+
+<div>
+    <table style="font-size: 24; width: 100%;">
+        <tr>
+            <th> Frame </th>
+            <th style="text-align: center;"> Stack </th>
+        </tr>
+        <tr>
+            <th> 1 </th>
+            <th style="text-align: left;">
+                ping ->
+            </th>
+        </tr>
+        <tr>
+            <th> 2 </th>
+            <th style="text-align: left;">
+                pong ->
+            </th>
+        </tr>
+        <tr>
+            <th> 3 </th>
+            <th style="text-align: left;">
+                ping ->
+            </th>
+        </tr>
+        <tr>
+            <th> 4 </th>
+            <th style="text-align: left;">
+                pong ->
+            </th>
+        </tr>
+        <tr>
+            <th> 5 </th>
+            <th style="text-align: left;">
+                ping -> 
+            </th>
+        </tr>
+        <tr>
+            <th> 6 </th>
+            <th style="text-align: left;">
+                pong ->
+            </th>
+        </tr>
+        <tr>
+            <th> ... </th>
+            <th style="text-align: left;"> ... </th>
+        </tr>
+        <tr>
+            <th> ... </th>
+            <th style="text-align: left; color: #7D7"> No stack overflow </th>
+        </tr>
+    </table>
+</div>
+</div></div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin-left: auto;
+margin-right: auto;
+">
+
+<div class="common-title">
+    PyPy
+</div>
+
+<div>
+    <p> Python implemented in Python </p>
+    <p> Faster than C-Python </p>
+    <p> Not as fast as Cython, but compile not required </p>
+    <p> Stackless included for micro-threads </p>
+    <p> Better memory efficiency </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Is it enough?
+</div>
+
+<div>
+    <p> Still slower than C/C++/C# </p>
+    <p> Compatibility issue with libraries </p>
+    <p> Compatibility issue with DCC tools </p>
+</div>
+
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Numpy
+</div>
+<div>
+    <p> Multi dimensional array crunching </p>
+    <p> Integrate C/C++/Fortran </p>
+    <p> Intel MKL or OpenBLAS </p>
+    <p> Still only using CPU </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code>
+# numpy random
+# easier to read, much faster
+
+import random
+import timeit
+import numpy as np
+
+def numpyrand():
+    return np.random.uniform(0.0, 1.0, size=(100, 100))
+
+def pyrand():
+    result = []
+    for x in range(100):
+        result.append([])
+        for y in range(100):
+            result[x].append(random.random())
+    return result
+
+print(
+    timeit.timeit(numpyrand, number=1000),
+    timeit.timeit(pyrand, number=1000)
+)
+
+# numpy with Intel MKL
+numpy random: 0.0855
+python random: 1.5828
+</code></pre></div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Numpy
+</div>
+<div>
+    <p> Scipy: Python for science </p>
+    <p> Pandas: Python data analysis library on top of numpy </p>
+    <p> Numba: LLVM(Clang) compiled python with GPU </p>
+    <p> Tiny numpy: Header only numpy </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    PyCuda
+</div>
+
+<div>
+    <p> Python integrated with CUDA </p>
+    <p> CUDA is GPGPU framework provided by NVIDIA </p>
+    <p> CUDA code compile on runtime </p>
+    <p> Compatible with Numpy </p>
+    <p> Provides basic calculation APIs, as well as runtime cuda compile </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code>
+# PyCuda
+
+from functools import partial
+import timeit
+
+import numpy as np
+import pycuda.autoinit
+from pycuda.curandom import rand
+
+
+def numpyrand(size):
+    return np.random.uniform(0.0, 1.0, size=size)
+
+def pycudarand(size):
+    return rand(size, dtype=np.float32)
+
+print(
+    timeit.timeit(partial(numpyrand, (100, 100)), number=1),
+    timeit.timeit(partial(numpyrand, (1000, 1000)), number=1),
+    timeit.timeit(partial(numpyrand, (10000, 10000)), number=1),
+    timeit.timeit(partial(numpyrand, (10000, 100000)), number=1)
+)
+
+print(
+    timeit.timeit(partial(pycudarand, (100, 100)), number=1),
+    timeit.timeit(partial(pycudarand, (1000, 1000)), number=1),
+    timeit.timeit(partial(pycudarand, (10000, 10000)), number=1),
+    timeit.timeit(partial(pycudarand, (10000, 100000)), number=1),
+)
+
+# Numpy performance linearly drops by size of calculation
+# because Numpy is using CPU
+(100, 100) numpy: 0.0004
+(1000, 1000) numpy: 0.0112
+(10000, 10000) numpy: 1.1485
+(10000, 100000) numpy: 11.066
+
+# While pure Python drops unutilizable already at (10000, 10000)
+(10000, 10000) python: 16.5806
+
+# PyCuda performance is slower at first, because of PIPE construction,
+# but doesn't drop performance much even if calculation
+# exponentially increases while increasing
+# from 10,000 randoms to 1,000,000,000 randoms
+(100, 100) pycuda: 1.2710
+(1000, 1000) pycuda: 1.2507
+(10000, 10000) pycuda: 1.3872
+(10000, 100000) pycuda: 1.5752
+</code></pre></div>
+</div>
+ </div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Cupy
+</div>
+
+<div>
+    <p> Drop-in Numpy replacement </p>
+    <p> Not all Numpy APIs are compatible yet </p>
+    <p> Support CUDA </p>
+    <p> Provided as subset of Chainer </p>
+</div>
+
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code>
+# Cupy uses almost same API with Numpy,
+# while calculation is moved to GPU
+
+from functools import partial
+import timeit
+
+import numpy as np
+import cupy as cp
+
+
+cp.random.uniform(0.0, 1.0, size=(1, 1))
+
+def numpyrand(size):
+    return np.random.uniform(0.0, 1.0, size=size)
+
+def cupyrand(size):
+    return cp.random.uniform(0.0, 1.0, size=size)
+
+print(
+    timeit.timeit(partial(numpyrand, (100, 100)), number=1),
+    timeit.timeit(partial(numpyrand, (10000, 10000)), number=1)
+)
+
+print(
+    timeit.timeit(partial(cupyrand, (100, 100)), number=1),
+    timeit.timeit(partial(cupyrand, (10000, 10000)), number=1)
+)
+
+# numpy
+(100, 100): 0.0001
+(10000, 10000): 1.1305
+
+# cupy
+(100, 100): 0.0003
+(10000, 10000): 0.0755
+</code></pre></div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Tensorflow
+</div>
+
+<div>
+    <p> Machine Learning framework </p>
+    <p> Maintained by Google </p>
+    <p> Well documented, many references </p>
+    <p> Calculation should be 'compiled' before computed </p>
+    <p> Implements own way of number crunching </p>
+    <p> Provides a lot of utilities: distribute, visualize, etc </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code>
+# tensorflow-gpu
+from functools import partial
+import timeit
+import tensorflow as tf
+
+
+def tfrandom(size):
+    return tf.random_uniform(size, 0.0, 1.0)
+
+with tf.Session() as session:
+    c1 = partial(session.run, tfrandom((10, 10)))
+    c2 = partial(session.run, tfrandom((100, 100)))
+    c3 = partial(session.run, tfrandom((1000, 1000)))
+    c4 = partial(session.run, tfrandom((100, 100)))
+    c5 = partial(session.run, tfrandom((100, 100)))
+
+    t1 = timeit.timeit(c1, number=1)
+    t2 = timeit.timeit(c2, number=1)
+    t3 = timeit.timeit(c3, number=1)
+    t4 = timeit.timeit(c4, number=1)
+    t5 = timeit.timeit(c5, number=100)
+
+print(f"{t1:.4}, {t2:.4}, {t3:.4}, {t4:.4}, {t5:.4}")
+
+# size: cost
+# possibly contains some caching
+(10, 10): 0.0096
+(100, 100): 0.0054
+(1000, 1000): 0.0089
+
+# 100 times calculation doesn't consume 100 more time
+# next calculation is being assigned to empty processors
+(100, 100), '100 times': 0.0419
+</code></pre></div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Efficiency
+</div>
+
+<div>
+    <p> Parallelize </p>
+    <p> Context switching </p>
+    <p> Instructions </p>
+    <p> Grid, Block, Thread, Warp </p>
+    <p> Profiling </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Parallel
+</div>
+
+<div>
+    <p> This is why Python code runs faster than C++ in certain manner </p>
+    <p> Difference between CPU and GPU </p>
+    <p> CUDA code take advantage over parallel computing </p>
+    <p> Each unit is slower, but there are many units </p>
+    <p> Bad at branching </p>
+    <p> Heterogenoeus computing: serial(CPU) and parallel(GPU) </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code>
+# context switching
+# host and device
+
+import timeit
+import cupy as cp
+
+def a():
+    return cp.random.uniform(0.0, 1.0, (256, 256))
+
+def b():
+    return cp.random.uniform(0.0, 1.0, (1000, 256, 256))
+
+ta = timeit.timeit(a, number=10000)
+tb = timeit.timeit(b, number=10)
+
+print(ta, tb)
+# normal: 1.0653
+# less-switching: 0.0527
+</code></pre></div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Instructions
+</div>
+
+<div>
+    <p> Same with Shader </p>
+    <p> Free SFU ops(swizzle, saturate, sin, etc) </p>
+    <p> SFU(special function unit) has it's own cap (~20%) </p>
+    <p> Avoid branching </p>
+</div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Grid, Block, Thread, Warp, SFU
+</div>
+
+<div>
+    <p> Grid </p>
+    <p> Block </p>
+    <p> Thread </p>
+    <p> Warp </p>
+    <p> SFU </p>
+</div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Grid (Kernel)
+</div>
+
+<div>
+    <p> Contains multiple blocks </p>
+    <p> Number of threads and blocks should be specified on initialize </p>
+    <p> Global memory access </p>
+</div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Block
+</div>
+
+<div>
+    <p> Contains multiple threads </p>
+    <p> Shared access memory </p>
+    <p> ~64kb cache (>fermi) </p>
+</div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Thread
+</div>
+
+<div>
+    <p> Single instruction executor </p>
+    <p> Local memory access </p>
+</div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Warp
+</div>
+
+<div>
+    <p> Execution unit consists of 32 parallel threads in a block </p>
+    <p> Executes multiple(~32) threads together </p>
+    <p> Threads in a warp shares exactly the same code </p>
+    <p> Scheduler may execute multiple warps concurrently (>fermi) </p>
+</div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    SFU
+</div>
+
+<div>
+    <p> Stands for special function unit </p>
+    <p> Executes transcendental instructions </p>
+    <p> sin, cos, 1/x, sqrt, saturate, etc </p>
+    <p> One instruction per thread, per clock </p>
+    <p> (A warp executes over 8 clocks) </p>
+    <p> Decoupled from dispatch unit: "FREE" calculation </p>
+</div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Profiling
+</div>
+
+<div>
+    <p> Simply counting time is not accurate </p>
+    <p> Dynamic Parallelism (>Kepler) </p>
+    <p> Concurrency </p>
+    <p> Different by device, driver, situation, etc </p>
+    <p> NSight </p>
+</div></div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    More Efficiency
+</div>
+
+<div>
+    <p> When you write your own custom CUDA code </p>
+    <p> Aligned memory access </p>
+    <p> Shared Memory </p>
+    <p> Texture Fetch instead of Buffer when possible </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Coalescing Memory Access
+</div>
+
+<div>
+    <p> Coalescing? </p>
+    <p> Global memory access (not local) </p>
+    <p> Coalesced access pattern </p>
+    <p> Misaligned access pattern </p>
+    <p> Striding access pattern </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Shared Memory
+</div>
+
+<div>
+    <p> "Shared" among threads in a block </p>
+    <p> Can be used to avoid uncoalesced memory access </p>
+    <p> Avoid serialization, or will cause host sync </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="common-title">
+    Compute Shader
+</div>
+
+<div>
+    <p> Another perspective of utilizing GPU </p>
+    <p> Use shader language to define computation </p>
+    <p> Nothing directly related to rendering </p>
+    <p> Common shader: Read vertex/face index/texture, write to frame buffers </p>
+    <p> Compute shaders: Read buffers, write to buffers </p>
+    <p> For technical artists, this could be more intuitive </p>
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+margin-top: 100px;
+">
+
+<div class="code-container"><pre><code>
+# compute shader
+
+import moderngl
+import numpy as np
+
+
+compute_shader_source = """
+#version 430
+
+layout (local_size_x=64) in;
+
+layout (std430, binding=1) buffer outs_1
+{
+    // 4 bytes
+    float xs[1];
+};
+
+layout (std430, binding=2) buffer outs_2
+{
+    // 4 bytes
+    int ys[1];
+};
+
+void main()
+{
+    // invocation index
+    uint i = gl_LocalInvocationIndex;
+
+    // 0.0 ~ 126.0
+    xs[i] = float(i) * 2.0;
+
+    // 0 ~ 63
+    ys[i] = int(i);
+}
+"""
+
+# prepare and compile compute shader
+context = moderngl.create_standalone_context(require=430)
+compute_shader = context.compute_shader(compute_shader_source)
+
+# prepare buffer
+default_outs_buffer_1 = np.linspace(0.0, 10.0, 64).astype(np.float32)
+default_outs_buffer_2 = np.linspace(0.0, 10.0, 64).astype(np.int32)
+default_outs_buffer_1 = default_outs_buffer_1.reshape((8, 8))
+default_outs_buffer_2 = default_outs_buffer_2.reshape((8, 8))
+
+# bind buffer
+outs_buffer_1 = context.buffer(default_outs_buffer_1)
+outs_buffer_2 = context.buffer(default_outs_buffer_2)
+outs_buffer_1.bind_to_storage_buffer(1)
+outs_buffer_2.bind_to_storage_buffer(2)
+
+# execute
+compute_shader.run()
+
+# read buffer
+outs_buffer_1 = outs_buffer_1.read()
+outs_buffer_2 = outs_buffer_2.read()
+
+# format read buffer
+data_1 = np.frombuffer(outs_buffer_1, dtype=np.float32)
+data_1 = data_1.reshape((8, 8))
+data_2 = np.frombuffer(outs_buffer_2, dtype=np.int32)
+data_2 = data_2.reshape((8, 8))
+
+# out
+print(data_1)
+print(data_2)
+
+# OUTPUTS:
+# data_1
+[[  0.   2.   4.   6.   8.  10.  12.  14.]
+ [ 16.  18.  20.  22.  24.  26.  28.  30.]
+ [ 32.  34.  36.  38.  40.  42.  44.  46.]
+ [ 48.  50.  52.  54.  56.  58.  60.  62.]
+ [ 64.  66.  68.  70.  72.  74.  76.  78.]
+ [ 80.  82.  84.  86.  88.  90.  92.  94.]
+ [ 96.  98. 100. 102. 104. 106. 108. 110.]
+ [112. 114. 116. 118. 120. 122. 124. 126.]]
+
+# data_2
+[[ 0  1  2  3  4  5  6  7]
+ [ 8  9 10 11 12 13 14 15]
+ [16 17 18 19 20 21 22 23]
+ [24 25 26 27 28 29 30 31]
+ [32 33 34 35 36 37 38 39]
+ [40 41 42 43 44 45 46 47]
+ [48 49 50 51 52 53 54 55]
+ [56 57 58 59 60 61 62 63]]
+</code></pre></div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="main-title">
+    QnA
+</div>
+</div>
+</div><div class='slide-content'>
+<div style="
+width: 1024px;
+margin: auto;
+">
+
+<div class="main-title">
+    Thanks!
+</div>
+</div>
+</div>
+</div><div class="slick_nav_container"><div class="slick_navigator">
+<div class='slide-thumb'><div><div class="slide_numbering">    Intro</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Notice</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Content</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Benefit</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Concern</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Slow?</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    So?</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Or...</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Better Py</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Big-O</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Cache</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Str Format</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Builtin</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Overhead</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Faster</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Cython</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Stackless</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Without</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Without</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    With</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    With</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    PyPy</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Enough?</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Numpy</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Numpy</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Content</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    PyCuda</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    PyCuda</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Cupy</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Cupy</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Tensorflow</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Tensorflow</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Efficiency</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Parallel</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Switch</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Instruction</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Threading</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Grid</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Block</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Thread</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Warp</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    SFU</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Profile</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    More</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Coalesce</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Shared</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Compute</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Compute</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Q&A</div></div></div><div class='slide-thumb'><div><div class="slide_numbering">    Thanks</div></div></div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        let slide_content = $(".slick_main_slide");
+        slide_content.slick(
+        {
+            dots: false,
+            arrows: false,
+            infinite: false,
+            initialSlide: true,
+            speed: 300,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            swipeToSlide: true,
+            adaptiveHeight: true,
+            asNavFor: ".slick_navigator"
+        });
+        let nav = $(".slick_navigator");
+        nav.slick({
+            dots: false,
+            arrows: false,
+            infinite: false,
+            initialSlide: true,
+            speed: 300,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            variableWidth: true,
+            swipeToSlide: true,
+            adaptiveHeight: true,
+            asNavFor: ".slick_main_slide",
+        });
+        hljs.configure({
+            tabReplace: '    ',
+        });
+        $('pre code').each(function(i, block)
+        {
+            hljs.highlightBlock(block);
+        });
+        nav.slick('slickGoTo', 0)
+    });
+</script>
+</body></html>
+    
