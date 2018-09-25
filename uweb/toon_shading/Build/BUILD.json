@@ -1,7 +1,7 @@
 {
 "companyName": "MinuJeong",
 "productName": "ToonShadingDemo",
-"dataUrl": "https://s3.us-east-2.amazonaws.com/minujeong.com.staticserve/BUILD.data.unityweb",
+"dataUrl": "https://s3-us-west-1.amazonaws.com/minujunitywebglstaticserve/BUILD.data.unityweb",
 "wasmCodeUrl": "BUILD.wasm.code.unityweb",
 "wasmFrameworkUrl": "BUILD.wasm.framework.unityweb",
 "TOTAL_MEMORY": 268435456,
