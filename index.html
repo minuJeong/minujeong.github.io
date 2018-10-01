@@ -6,177 +6,122 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'UA-121641346-1');
 </script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.min.js"></script>
-    <style type="text/css">
-        a,
-        a:link,
-        a:visited
-        {
-            color: #BBB;
-            text-decoration: none;
-        }
+<style type="text/css">
+    a,
+    a:link,
+    a:visited
+    {
+        color: #BBB;
+        text-decoration: none;
+    }
 
-        a:hover,
-        a:active
-        {
-            color: #EEE;
-            text-decoration: underline;
-        }
+    a:hover,
+    a:active
+    {
+        color: #EEE;
+        text-decoration: underline;
+    }
 
-        body
-        {
-            color: #EEEEEE;
-            overflow-x: hidden;
-        }
+    body
+    {
+        color: #EEEEEE;
+        overflow-x: hidden;
+    }
 
-        .background
-        {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            margin: 0px;
-            background: linear-gradient(#222, #444);
-        }
+    .background
+    {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 0px;
+        background: linear-gradient(#222, #444);
+    }
 
-        .email_contact
-        {
-            position: fixed;
-            right: 10px;
-            bottom: 10px;
-            padding: 10px;
-            border: 2px #888 solid;
+    .email_contact
+    {
+        position: fixed;
+        right: 10px;
+        bottom: 10px;
+        padding: 10px;
+        border: 2px #888 solid;
 
-            transition: background-color 0.25s ease;
-        }
+        transition: background-color 0.25s ease;
+    }
 
-        .content
-        {
-            position: absolute;
-            left: 50%;
-            margin: 20px 0px 20px 0px;
-            padding: 0px;
-            transform: translate(-50%, 0%);
-        }
+    .content
+    {
+        position: absolute;
+        left: 50%;
+        margin: 20px 0px 20px 0px;
+        padding: 0px;
+        transform: translate(-50%, 0%);
+    }
 
-        .title
-        {
-            border: 2px #888 solid;
-            margin: 20px;
-            padding: 0px 20px 0px 20px;
-            text-align: right;
-        }
+    .title
+    {
+        border: 2px #888 solid;
+        margin: 20px;
+        padding: 0px 20px 0px 20px;
+        text-align: right;
+    }
 
-        .gallery_category
-        {
-            padding: 20px;
-            margin: 20px;
-            border: 2px #888 solid;
-        }
+    .gallery_category
+    {
+        padding: 20px;
+        margin: 20px;
+        border: 2px #888 solid;
+    }
 
-        .gallery_items_container
-        {
-            display: grid;
-            grid-row-gap: 10px;
-            grid-column-gap: 10px;
-            grid-template-columns: repeat(3, 320px);
-            grid-auto-rows: auto;
-        }
+    .gallery_items_container
+    {
+        display: grid;
+        grid-row-gap: 10px;
+        grid-column-gap: 10px;
+        grid-template-columns: repeat(3, 320px);
+        grid-auto-rows: auto;
+    }
 
-        .gallery_drawings_container
-        {
-            display: grid;
-            grid-row-gap: 10px;
-            grid-column-gap: 10px;
-            grid-template-columns: repeat(5, 192px);
-            grid-auto-rows: auto;
-        }
+    .gallery_title
+    {
+        font-size: 17px;
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+    }
 
-        .gallery_drawing_item
-        {
-            padding: 7px;
-            border: 3px #555 solid;
-            text-align: center;
+    .gallery_item
+    {
+        padding: 7px;
+        border: 3px #555 solid;
+        text-align: center;
 
-            height: 172px;
+        height: 410px;
 
-            transition: background-color 0.15s ease;
-        }
+        transition: background-color 0.15s ease;
+    }
 
-        .gallery_drawing_item:hover
-        {
-            background-color: #111;
-        }
+    .gallery_item:hover
+    {
+        background-color: #111;
+    }
 
-        .gallery_drawing_img
-        {
-            max-height: 192px;
-            max-width: 192px;
-        }
+    .gallery_item_desc
+    {
+        font-size: 14px;
+        margin: 5px;
+    }
 
-        .gallery_title
-        {
-            font-size: 17px;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .gallery_item
-        {
-            padding: 7px;
-            border: 3px #555 solid;
-            text-align: center;
-
-            height: 410px;
-
-            transition: background-color 0.15s ease;
-        }
-
-        .gallery_item:hover
-        {
-            background-color: #111;
-        }
-
-        .gallery_item_desc
-        {
-            font-size: 14px;
-            margin: 5px;
-        }
-
-        .tooltype_emph
-        {
-            color: #EEE;
-        }
-
-        .overlay_drawing_view
-        {
-            transition: background-color 0.5s ease;
-            background-color: #0000;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            margin: 0px;
-            overflow: hidden;
-        }
-
-        .overlay_drawing_img
-        {
-            transition: opacity 0.5s ease;
-            opacity: 0.0;
-            position: relative;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-    </style>
+    .tooltype_emph
+    {
+        color: #EEE;
+    }
+</style>
 </head>
 <body id="root" style="margin: 0px;">
 <div class="background"></div>
-
 <div class="content">
     <div class="title">
         <a href="https://www.linkedin.com/in/minujeong/">
@@ -314,92 +259,11 @@
     </div>
 
     <div class="gallery_category">
-        <div class="gallery_title">
-            Drawing
-        </div>
-        <div class="gallery_drawings_container">
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/WbSwqlJ.png">
-            <img src="https://i.imgur.com/JvTCEM7.png" class="gallery_drawing_img" />
+        <a href="drawing/show_drawing.html">
+            <div class="gallery_title">
+                Drawing
             </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/0Vl5tDH.jpg">
-            <img src="https://i.imgur.com/3tVQLOe.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/sVAa1Vh.jpg">
-            <img src="https://i.imgur.com/LWKhW6E.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/ybIk4BF.jpg">
-            <img src="https://i.imgur.com/nd9v1ZR.png" class="gallery_drawing_img" />
-            </div></a>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/mmdXUif.jpg">
-            <img src="https://i.imgur.com/GJTITBw.jpg" class="gallery_drawing_img" />
-            </div>
-
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/z2ELpZ6.jpg">
-            <img src="https://i.imgur.com/4QoOuCF.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/2Klqd33.jpg">
-            <img src="https://i.imgur.com/tl1z98X.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/nTE5gkl.png">
-            <img src="https://i.imgur.com/SKwtdZv.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/KCQQhOJ.png">
-            <img src="https://i.imgur.com/kZXkYpr.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/Ozo8tAd.jpg">
-            <img src="https://i.imgur.com/x4lFhqR.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/Vqg97Ju.jpg">
-            <img src="https://i.imgur.com/QDtcb0t.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/LTgwkQW.png">
-            <img src="https://i.imgur.com/uHGoctV.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/gE0DX3j.png">
-            <img src="https://i.imgur.com/6o2F67f.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/GXFOR5l.png">
-            <img src="https://i.imgur.com/vByGtUj.png" class="gallery_drawing_img" />
-            </div>
-
-            <!-- GIF mcrown -->
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/oMrslO9.gif">
-            <img src="https://i.imgur.com/xWNhOxk.jpg" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/FkvfvvM.jpg">
-            <img src="https://i.imgur.com/iVBQAoZ.png" class="gallery_drawing_img" />
-            </div>
-
-            <!-- heavy bow gun -->
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/wrdtWug.png">
-            <img src="https://i.imgur.com/3rVdQSZ.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/YG4hc15.png">
-            <img src="https://i.imgur.com/Is8AgXZ.png" class="gallery_drawing_img" />
-            </div>
-
-            <div class="gallery_drawing_item" data-bigurl="https://i.imgur.com/XQFl53I.png">
-            <img src="https://i.imgur.com/ppO5Il2.png" class="gallery_drawing_img" />
-            </div>
-
-
-            
-        </div>
+        </a>
     </div>
 
     <div class="gallery_category">
@@ -602,62 +466,3 @@
     </div>
 </div>
 </body></html>
-<script type="text/javascript">
-    for(let drawingItem of document.getElementsByClassName("gallery_drawing_item"))
-    {
-        drawingItem.onclick = function ()
-        {
-            let newimg_container = document.createElement("div");
-            root.appendChild(newimg_container);
-            newimg_container.classList.add("overlay_drawing_view");
-
-            let newimg = document.createElement("img");
-            newimg_container.appendChild(newimg);
-            newimg.classList.add("overlay_drawing_img");
-            newimg.src = drawingItem.dataset.bigurl;
-            newimg.style.maxWidth = newimg_container.clientWidth;
-            newimg.style.maxHeight = newimg_container.clientHeight;
-
-            anime({
-                targets: newimg,
-                translateY: [
-                    { value: "-100%", duration: 0 },
-                    { value: "-50%", duration: 500 },
-                ],
-                translateX: [
-                    { value: "-50%", duration: 0 }
-                ],
-                easing: "easeOutSine"
-            });
-
-            newimg.style.opacity = 1;
-            newimg_container.style.backgroundColor = "#111C";
-
-            newimg_container.onclick = function()
-            {
-                newimg_container.onclick = null;
-
-                anime.remove(newimg);
-                anime({
-                    targets: newimg,
-                    translateY: [
-                        { value: "-50%", duration: 0 },
-                        { value: "50%", duration: 500 },
-                    ],
-                    translateX: [
-                        { value: "-50%", duration: 0 }
-                    ],
-                    easing: "easeOutSine",
-                    duration: 500,
-                    complete: function ()
-                    {
-                        console.log("AFAA");
-                        root.removeChild(newimg_container);
-                    }
-                });
-                newimg.style.opacity = 0;
-                newimg_container.style.backgroundColor = "#0000";
-            }
-        }
-    }
-</script>
