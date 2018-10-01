@@ -65,7 +65,29 @@
         border: 2px #888 solid;
         margin: 20px;
         padding: 0px 20px 0px 20px;
-        text-align: right;
+        text-align: center;
+    }
+
+    .sns_link
+    {
+        font-weight: bold;
+        color: #BBB;
+        transition: color 0.25s ease;
+    }
+
+    .github_link:hover
+    {
+        color: #EEE;
+    }
+
+    .facebook_link:hover
+    {
+        color: #7BF;
+    }
+
+    .linkedin_link:hover
+    {
+        color: #7DF;
     }
 
     .gallery_category
@@ -108,6 +130,16 @@
         background-color: #111;
     }
 
+    .article_item
+    {
+        height: 80px;
+    }
+
+    .category_item
+    {
+        height: 350px;
+    }
+
     .gallery_item_desc
     {
         font-size: 14px;
@@ -124,29 +156,20 @@
 <div class="background"></div>
 <div class="content">
     <div class="title">
-        <a href="https://www.linkedin.com/in/minujeong/">
-            <h4>Minu Jeong</h4>
-        </a>
+        <h2 style="color: #EEE; line-height: 60%;">Minu Jeong</h2>
+        <div>
+            <a class="sns_link github_link" href="https://github.com/minujeong/">Github</a>
+            /
+            <a class="sns_link facebook_link" href="https://www.facebook.com/jeong.minu">Facebook</a>
+            /
+            <a class="sns_link linkedin_link" href="https://www.linkedin.com/in/minujeong/">Linkedin</a>
+        </div>
     </div>
     <div class="gallery_category">
         <div class="gallery_title">
-            Raymarching Demos
+            Raymarching
         </div>
         <div class="gallery_items_container">
-            <a href="glsl/raymarch.html?frag=js/frag_cage.js">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/tSbnRXl.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>Cage Demo</h3>
-                        <p>
-                            Raymarching surface with stylized shading, using glsl on web.
-                        </p>
-                    </div>
-                </div>
-            </a>
-            
             <a href="https://shadertoy.com/view/XsGfW1">
                 <div class="gallery_item">
                     <div>
@@ -155,219 +178,60 @@
                     <div class="gallery_item_desc">
                         <h3>Modeling Figure</h3>
                         <p>
-                            Used raymarching in shader forge. Used distance field functions and blendings.
+                            Shader forge based figure shape field
                         </p>
                     </div>
                 </div>
             </a>
-
-            <a href="glsl/raymarch.html?frag=js/frag_postfx.js">
+            <a href="glsl/raymarch.html?frag=js/frag_cage.js">
                 <div class="gallery_item">
                     <div>
-                        <img src="https://i.imgur.com/fmNLnzw.png" height="300" />
+                        <img src="https://i.imgur.com/tSbnRXl.png" height="300" />
                     </div>
                     <div class="gallery_item_desc">
-                        <h3>Post Processing Demo</h3>
+                        <h3>Cage Demo</h3>
                         <p>
-                            Send canvas buffer to postprocessing shader
+                            Stylzed surface shading
                         </p>
                     </div>
                 </div>
             </a>
-        </div>
-    </div>
-
-    <div class="gallery_category">
-        <div class="gallery_title">
-            Python tools
-        </div>
-
-        <div class="gallery_items_container">
-            <a href="https://github.com/minuJeong/yorick_biped2bone">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/oS9nRi8.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <b class="tooltype_emph">[Max]</b><br>
-                        Biped to bones baking
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://bitbucket.org/minujeong/eabtools/src/master/">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/hWNjWJX.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <b class="tooltype_emph">[Maya]</b><br>
-                        Voxelizer
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://github.com/minuJeong/psd_snapshot_tool">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/K7LKqiA.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <b class="tooltype_emph">[Photoshop]</b><br>
-                        PSD snapshot
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://bitbucket.org/minujeong/psd-color-grading/src/master/">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/yHvNPaM.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <b class="tooltype_emph">[Photoshop]</b><br>
-                        PSD color grading with python
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://bitbucket.org/minujeong/naverwebtooncrawler/src/master/">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/9QkdTNB.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <b class="tooltype_emph">[Python]</b>
-                        <br>Web comic DL
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://github.com/minuJeong/hdri-to-cubemap">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/uQDBHYx.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <b class="tooltype_emph">[Python]</b>
-                        <br>HDRI to Cubemap
-                    </div>
-                </div>
-            </a>
-
-        </div>
-    </div>
-
-    <div class="gallery_category">
-        <a href="drawing/show_drawing.html">
-            <div class="gallery_title">
-                Drawing
-            </div>
-        </a>
-    </div>
-
-    <div class="gallery_category">
-        <div class="gallery_title">
-            Game Jams
-        </div>
-        <div class="gallery_items_container">
-            <a href="https://globalgamejam.org/2017/games/splashkingdom">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/gJvbIdF.png" style="max-height: 300px; max-width: 300px;" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>Global Game Jam 2018</h3>
-                        <p>
-                            Punch tile to push your slime, and let it reach the goal. Participated as artist.
-                        </p>
-                    </div>
-                </div>
-            </a>
-            <a href="https://youtu.be/-i8KDTFo4P4">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/RynPzIK.png" style="max-height: 300px; max-width: 300px;" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>Cherry Jam 2017</h3>
-                        <p>
-                            Simple physics based dungeon crawling game idea.
-                        </p>
-                    </div>
-                </div>
-            </a>
-            <a href="https://youtu.be/Xo1X0aofQDI">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/jToTQ7U.png" style="max-height: 300px; max-width: 300px;" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>Ludam Dare 2017</h3>
-                        <p>
-                            Writing simple platformer code for fun.
-                        </p>
-                    </div>
-                </div>
-            </a>
-            <a href="https://github.com/minuJeong/Skilltree-Lab-Gamejam-2015">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/j1QVGqb.png" style="max-height: 300px; max-width: 300px;" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>Occulus VRJam 2015</h3>
-                        <p>
-                            Sync head tracking with dragon mouth. Breathe fire to stop the robbers.
-                        </p>
-                    </div>
-                </div>
-            </a>
-            <a href="https://youtu.be/O9KhSGkB_2s">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/LnaOyRz.png" style="max-height: 300px; max-width: 300px;" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>2016 Jeju gamejam</h3>
-                        <p>
-                            Design your own starwars character, and watch them fight.<br>
-                            Artwork by <b><font color="#FFF">Sara Choi</font></b>.
-                        </p>
-                    </div>
-                </div>
-            </a>
-            <a href="https://globalgamejam.org/2017/games/splashkingdom">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/lqO07UL.png" style="max-height: 300px; max-width: 300px;" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>Global Game Jam Profile</h3>
-                        <p>
-                            Other game jam participations in Global Game Jam.
-                        </p>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <div class="gallery_category">
-        <div class="gallery_title">
-            Code Drawing
-        </div>
-
-        <div class="gallery_items_container">
             <a href="glsl/raymarch.html?frag=js/draw/vsajivdsa.js">
                 <div class="gallery_item">
                     <div>
                         <img src="https://i.imgur.com/QHxhuie.png" height="300" />
                     </div>
                     <div class="gallery_item_desc">
-                        <h3>skeleton drawing</h3>
+                        <h3>Skeleton Demo</h3>
                         <p>
-                            WIP
+                            Complex shape field
+                        </p>
+                    </div>
+                </div>
+            </a>
+            <a href="glsl/raymarch.html?frag=js/frag_blob.js">
+                <div class="gallery_item">
+                    <div>
+                        <img src="https://i.imgur.com/3BdighL.png" height="300" />
+                    </div>
+                    <div class="gallery_item_desc">
+                        <h3>Blob Drop Demo</h3>
+                        <p>
+                            Time based blending shape field
+                        </p>
+                    </div>
+                </div>
+            </a>
+            <a href="uweb/raymarching_in_unity/index.html">
+                <div class="gallery_item">
+                    <div>
+                        <img src="https://image.ibb.co/g29dK9/image.png" height="300" />
+                    </div>
+                    <div class="gallery_item_desc">
+                        <h3>Raymarching in Unity</h3>
+                        <p>
+                            Implemended raymarching with Unity.
+                            Reduced marching count by depth render target.
                         </p>
                     </div>
                 </div>
@@ -377,7 +241,7 @@
 
     <div class="gallery_category">
         <div class="gallery_title">
-            Other Demos
+            Shading
         </div>
 
         <div class="gallery_items_container">
@@ -390,34 +254,6 @@
                         <h3>Simple Web GL Demo</h3>
                         <p>
                             Study of web GL. Used three JS.
-                        </p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="glsl/raymarch.html?frag=js/frag_blob.js">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/3BdighL.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>Blob Drop Demo</h3>
-                        <p>
-                            Simple raymarching and shape blending.
-                        </p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="uweb/raymarching_in_unity/index.html">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://image.ibb.co/g29dK9/image.png" height="300" />
-                    </div>
-                    <div class="gallery_item_desc">
-                        <h3>Raymarching in Unity Demo</h3>
-                        <p>
-                            Simple raymarching using Unity engine, exported to WebGL build.
                         </p>
                     </div>
                 </div>
@@ -437,10 +273,7 @@
                     </div>
                 </div>
             </a>
-
         </div>
-
-        
     </div>
 
     <div class="gallery_category">
@@ -450,10 +283,7 @@
 
         <div class="gallery_items_container">
             <a href="articles/python_acceleration/index_gen.html">
-                <div class="gallery_item">
-                    <div>
-                        <img src="https://i.imgur.com/awhMTeT.png" height="300" />
-                    </div>
+                <div class="gallery_item article_item">
                     <div class="gallery_item_desc">
                         <h3>Python Acceleration</h3>
                         <p>
@@ -464,5 +294,43 @@
             </a>
         </div>
     </div>
+
+<div class="gallery_category">
+    <div class="gallery_title">
+        Other categories
+    </div>
+    <div class="gallery_items_container">
+    <div class="gallery_item category_item">
+    <a href="subpage/tools.html">
+        <div>
+            <img src="https://i.imgur.com/yHvNPaM.png" height="300" />
+        </div>
+        <div class="gallery_item_desc">
+            <h3>Max/Maya/Python Tools</h3>
+        </div>
+    </a>
+    </div>
+    <div class="gallery_item category_item">
+    <a href="subpage/drawing.html">
+        <div>
+            <img src="https://image.ibb.co/jT5iGz/fdsadfasfgd_chars_300.png" height="300" />
+        </div>
+        <div class="gallery_item_desc">
+            <h3>Drawing</h3>
+        </div>
+    </a>
+    </div>
+    <div class="gallery_item category_item">
+    <a href="subpage/gamejams.html">
+        <div>
+            <img src="https://i.imgur.com/lqO07UL.png" height="300" />
+        </div>
+        <div class="gallery_item_desc">
+            <h3>Game Jams</h3>
+        </div>
+    </a>
+    </div>
+    </div>
+</div>
 </div>
 </body></html>
