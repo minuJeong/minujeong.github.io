@@ -110,6 +110,13 @@
         grid-auto-rows: auto;
     }
 
+    .gallery_drawing_item
+    {
+        margin: 10px;
+        padding: 0px;
+        border: 0px;
+    }
+
     .pc_only
     {
         display: none;
@@ -127,11 +134,7 @@
 {
     .gallery_drawings_container
     {
-        display: grid;
-        grid-row-gap: 10px;
-        grid-column-gap: 10px;
         grid-template-columns: repeat(2, 192px);
-        grid-auto-rows: auto;
     }
 }
 
@@ -150,17 +153,5 @@
     .gallery_item_desc
     {
         margin-bottom: 15px;
-    }
-}
-
-@media screen and (max-width: 440px)
-{
-    .gallery_drawings_container
-    {
-        display: grid;
-        grid-row-gap: 10px;
-        grid-column-gap: 10px;
-        grid-template-columns: 192px;
-        grid-auto-rows: auto;
     }
 }
