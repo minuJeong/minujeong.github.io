@@ -1,0 +1,154 @@
+a,
+a:link,
+a:visited
+{
+    color: #BBB;
+    text-decoration: none;
+}
+
+a:hover,
+a:active
+{
+    color: #EEE;
+    text-decoration: underline;
+}
+
+body
+{
+    color: #EEEEEE;
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.background
+{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+
+    background: linear-gradient(#111, #222);
+
+    transition: background 0.5s ease;
+}
+
+.content
+{
+    position: absolute;
+    left: 50%;
+    margin: 20px 0px 20px 0px;
+    padding: 0px;
+    transform: translate(-50%, 0%);
+}
+
+.title
+{
+    background: #222;
+    border: 2px #666 solid;
+    margin: 20px;
+    padding: 0px 20px 0px 20px;
+    text-align: center;
+
+    transition: background 0.5s ease;
+}
+
+.sns_link
+{
+    font-weight: bold;
+    color: #BBB;
+    transition: color 0.25s ease;
+}
+
+.github_link:hover
+{
+    color: #EEE;
+}
+
+.facebook_link:hover
+{
+    color: #7BF;
+}
+
+.linkedin_link:hover
+{
+    color: #7DF;
+}
+
+.gallery_category
+{
+    padding: 20px;
+    margin: 20px;
+    border: 2px #555 solid;
+    background: #222;
+
+    transition: background 0.5s ease;
+}
+
+.gallery_items_container
+{
+    display: grid;
+    grid-row-gap: 10px;
+    grid-column-gap: 10px;
+    grid-template-columns: repeat(3, 320px);
+    grid-auto-rows: auto;
+}
+
+.gallery_title
+{
+    font-size: 20px;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.gallery_item
+{
+    padding: 7px;
+    border: 2px #555 solid;
+    text-align: center;
+
+    height: 420px;
+
+    transition: background-color 0.15s ease;
+}
+
+.gallery_item:hover
+{
+    background-color: #111;
+}
+
+.article_item
+{
+    height: 80px;
+}
+
+.category_item
+{
+    height: 350px;
+}
+
+.gallery_item_desc
+{
+    font-size: 14px;
+    margin: 5px;
+}
+
+.tooltype_emph
+{
+    color: #EEE;
+}
+
+.pc_only
+{
+    visibility: visible;
+}
+
+.mobile_only
+{
+    display: none;
+    visibility: hidden;
+}
