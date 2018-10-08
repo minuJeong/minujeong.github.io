@@ -101,6 +101,15 @@
         height: auto;
     }
 
+    .gallery_drawings_container
+    {
+        display: grid;
+        grid-row-gap: 10px;
+        grid-column-gap: 10px;
+        grid-template-columns: repeat(3, 192px);
+        grid-auto-rows: auto;
+    }
+
     .pc_only
     {
         display: none;
@@ -111,6 +120,18 @@
     {
         display: block;
         visibility: visible;
+    }
+}
+
+@media screen and (max-width: 660px)
+{
+    .gallery_drawings_container
+    {
+        display: grid;
+        grid-row-gap: 10px;
+        grid-column-gap: 10px;
+        grid-template-columns: repeat(2, 192px);
+        grid-auto-rows: auto;
     }
 }
 
@@ -129,5 +150,17 @@
     .gallery_item_desc
     {
         margin-bottom: 15px;
+    }
+}
+
+@media screen and (max-width: 440px)
+{
+    .gallery_drawings_container
+    {
+        display: grid;
+        grid-row-gap: 10px;
+        grid-column-gap: 10px;
+        grid-template-columns: 192px;
+        grid-auto-rows: auto;
     }
 }
