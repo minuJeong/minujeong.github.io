@@ -123,12 +123,25 @@ body
 
 .article_item
 {
-    height: 80px;
+    padding: 7px;
+    border: 2px #AAA solid;
+    text-align: center;
+
+    height: 420px;
+
+    transition: background-color 0.15s ease;
+    transition: color 0.15s ease;
+}
+
+.article_item:hover
+{
+    color: #111;
+    background-color: #AAA;
 }
 
 .category_item
 {
-    height: 350px;
+    background-color: #111;
 }
 
 .gallery_item_desc
