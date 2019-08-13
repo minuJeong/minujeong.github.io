@@ -2,14 +2,14 @@ a,
 a:link,
 a:visited
 {
-    color: #BBB;
+    color: #EEE;
     text-decoration: none;
 }
 
 a:hover,
 a:active
 {
-    color: #EEE;
+    color: #FFF;
     text-decoration: underline;
 }
 
@@ -47,8 +47,8 @@ body
 
 .title
 {
-    background: #222;
-    border: 2px #666 solid;
+    background-image: linear-gradient(#070707, #121212);
+    border: 2px #333 solid;
     margin: 20px;
     padding: 0px 20px 0px 20px;
     text-align: center;
@@ -58,24 +58,44 @@ body
 
 .sns_link
 {
+    padding: 8px;
     font-weight: bold;
-    color: #BBB;
+    color: #CCC;
     transition: color 0.25s ease;
+    transition: background-color 0.25s ease;
+}
+
+.github_link
+{
+    background-color: #24292e;
+}
+
+.facebook_link
+{
+    background-color: #3578E5;
+}
+
+.linkedin_link
+{
+    background-color: #283e4a;
 }
 
 .github_link:hover
 {
-    color: #EEE;
+    background-color: #08080800;
+    color: #FFF;
 }
 
 .facebook_link:hover
 {
-    color: #7BF;
+    background-color: #08080800;
+    color: #FFF;
 }
 
 .linkedin_link:hover
 {
-    color: #7DF;
+    background-color: #08080800;
+    color: #FFF;
 }
 
 .gallery_category
