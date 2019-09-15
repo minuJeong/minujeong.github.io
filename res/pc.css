@@ -113,7 +113,7 @@ body
     display: grid;
     grid-row-gap: 10px;
     grid-column-gap: 10px;
-    grid-template-columns: repeat(3, 320px);
+    grid-template-columns: repeat(5, 220px);
     grid-auto-rows: auto;
 }
 
@@ -131,7 +131,7 @@ body
     border: 2px #555 solid;
     text-align: center;
 
-    height: 420px;
+    height: 360px;
 
     transition: background-color 0.15s ease;
 }
