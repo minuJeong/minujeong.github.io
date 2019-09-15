@@ -1,3 +1,6 @@
+
+<meta charset="UTF-8">
+
 <html>
 <head>
 
@@ -15,16 +18,47 @@
     });
 </script>
 
+<link rel="stylesheet" type="text/css" href="res/zupang.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 </head>
 <body>
+<div class="background"></div>
+<div class="foreground">
 
-<div>
-    Welcome to Zupang World
+<!-- Title -->
+<div class="title">
+<h2 style="margin: 20px 0px 20px 0px; grid-column: 1 / span 2;">
+    주팡 월드
+</h2>
+
+<div class="login" style="grid-column: 2">
+    <a class="loginlabel" id="loginbutton" href="https://id.twitch.tv/oauth2/authorize?client_id=ig9mcp3lsizqtypzce3v3ryv66lz93&redirect_uri=http://localhost:8080/minujeong.github.io/subservice/zupang.html&response_type=token&scope=user_read channel_check_subscription&claims={'id_token':{'email': null,'email_verified': null}, 'userinfo':{'picture': null}}">
+        <div style="width: 100%; height: 100%;">
+            Twitch 로그인
+        </div>
+    </a>
+    <div class="loginlabel" id="login_welcome" style="display: none;"></div>
 </div>
 
-<div>
-
 </div>
 
+<!-- Content -->
+<div class="content">
+    <canvas class="avatar label">
+    </canvas>
+
+    <div class="info label">
+        <div class="label" id="preferred_name_display" style="text-align: right;">로그인해 주세요.</div>
+        <div class="label" id="hooks_collected">갈고리 수: -</div>
+        <div class="label">2</div>
+        <div class="label">3</div>
+    </div>
+</div>
+
+</div>
 </body>
 </html>
+
+<script type="text/javascript" src="js/main.js"></script>

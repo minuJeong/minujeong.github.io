@@ -1,0 +1,102 @@
+a,
+a:link,
+a:visited
+{
+    color: #EEE;
+    text-decoration: none;
+}
+
+a:hover,
+a:active
+{
+    color: #FFF;
+    text-decoration: underline;
+}
+body
+{
+    color: #DDD;
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.background
+{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    background: linear-gradient(#060606, #161616);
+
+    transition: background 0.5s ease;
+}
+
+.foreground
+{
+    position: absolute;
+    left: 50%;
+    margin: 20px 0px 20px 0px;
+    padding: 0px;
+    transform: translate(-50%, 0%);
+}
+
+.title
+{
+    display: grid;
+    grid-template-columns: auto 220px;
+    border: 2px #444 solid;
+    margin: 10px 10px 8px 10px;
+    padding: 0px 10px 0px 10px;
+    text-align: center;
+    transition: background 0.5s ease;
+}
+
+.login
+{
+    background-color: #4b367c;
+    width: 220px;
+    height: 32px;
+    line-height: 32px;
+    margin: 0px 0px 10px 0px;
+    left: 0px;
+    font-size: 14;
+}
+
+.loginlabel
+{
+    text-align: center;
+}
+
+.content
+{
+    border: 2px #444 solid;
+    padding: 10px;
+    margin: 0px 10px 0px 10px;
+    display: grid;
+    grid-row-gap: 10px;
+    grid-template-columns: auto auto;
+}
+
+.avatar
+{
+    width: 400px;
+    height: 400px;
+}
+
+.info
+{
+    display: grid;
+    width: 250px;
+    grid-template-rows: 39px 39px 39px auto;
+}
+
+.label
+{
+    text-align: center;
+    margin: 5px;
+    padding: 2px;
+    border: 2px #222 solid;
+}
