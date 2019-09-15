@@ -1,4 +1,5 @@
 
+const ZUPANG_LAMBDA_URL = "https://g27ul2h5bk.execute-api.us-east-2.amazonaws.com/release"
 const CLIENT_ID = "ig9mcp3lsizqtypzce3v3ryv66lz93"
 const KRAKEN_URL = "https://api.twitch.tv/kraken"
 
@@ -89,7 +90,7 @@ function get_zupang_db_info(id)
 {
     let req = new XMLHttpRequest()
     req.onreadystatechange = (e)=>{console.log(e)}
-    req.open("POST", "https://g27ul2h5bk.execute-api.us-east-2.amazonaws.com/release")
+    req.open("POST", ZUPANG_LAMBDA_URL)
     req.send({"protocol": "login", "id": id})
 }
 
