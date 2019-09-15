@@ -131,7 +131,7 @@ body
     border: 2px #555 solid;
     text-align: center;
 
-    height: 360px;
+    height: 420px;
 
     transition: background-color 0.15s ease;
 }
@@ -175,12 +175,21 @@ body
     color: #EEE;
 }
 
-.gallery_drawings_container
+.gallery_shading_container
 {
     display: grid;
     grid-row-gap: 10px;
     grid-column-gap: 10px;
-    grid-template-columns: repeat(5, 192px);
+    grid-template-columns: repeat(3, 320px);
+    grid-auto-rows: auto;
+}
+
+.gallery_largeitems_container
+{
+    display: grid;
+    grid-row-gap: 10px;
+    grid-column-gap: 10px;
+    grid-template-columns: repeat(3, 320px);
     grid-auto-rows: auto;
 }
 
