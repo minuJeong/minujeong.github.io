@@ -49,6 +49,7 @@
 <div class="tabs">
     <div class="tab_buttons">
         <div class="label tab_button" id="default_tab" onclick="select_tab(event, 'tab_info')">Info</div>
+        <div class="label tab_button" onclick="select_tab(event, 'tab_inventory')">Inventory</div>
         <div class="label tab_button" onclick="select_tab(event, 'tab_world')">World</div>
     </div>
 
@@ -75,16 +76,21 @@
                 <div class="label" id="purse" style="text-align: center;"></div>
             </div>
 
-            <div class="label" id="inventory" style="grid-column: 1 / span 2; line-height: 300px;">
-                Inventory (예정)
-            </div>
-
             <div class="label" id="credit" style="grid-column: 1 / span 2; text-align: right; font-size: 12;">made by minujeong</div>
 
         </div>
     </div>
 
+    <div class="content tabitem" id="tab_inventory">
+        <div class="label" id="inventory" style="line-height: 300px;">
+            Inventory (예정)
+        </div>
+    </div>
+
     <div class="content tabitem" id="tab_world">
+        <div class="label" id="world" style="line-height: 300px;">
+            World (예정)
+        </div>
     </div>
 </div>
 

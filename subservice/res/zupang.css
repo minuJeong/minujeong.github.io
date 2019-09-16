@@ -99,11 +99,6 @@ body
     border: 2px #222 solid;
 }
 
-#inventory
-{
-    height: 280px;
-}
-
 .tabs
 {
     border: 2px #444 solid;
@@ -114,7 +109,7 @@ body
 .tab_buttons
 {
     display: grid;
-    grid-template-columns: 200px 200px auto;
+    grid-template-columns: 120px 120px 120px auto;
     min-width: 686px;
 }
 
@@ -138,5 +133,14 @@ body
 
 .tabitem
 {
-    display: none;
+}
+
+#inventory
+{
+    height: 280px;
+}
+
+#world
+{
+    height: 280px;
 }
