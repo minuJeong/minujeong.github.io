@@ -1,5 +1,5 @@
 
-const ZUPANG_LAMBDA_URL = "https://g27ul2h5bk.execute-api.us-east-2.amazonaws.com/release"
+const ZUPANG_LAMBDA_URL = "https://itgddii8f9.execute-api.us-east-2.amazonaws.com/release/login"
 const CLIENT_ID = "ig9mcp3lsizqtypzce3v3ryv66lz93"
 const KRAKEN_URL = "https://api.twitch.tv/kraken"
 
@@ -73,7 +73,6 @@ function on_load_oauth2(event)
         userinfo.username = res_kraken.name
 
         get_zupang_db_info(userinfo.username)
-
     })
     req_kraken.open("GET", kraken_url)
     put_kraken_header(req_kraken)
@@ -88,15 +87,29 @@ function on_load_oauth2(event)
 
 function get_zupang_db_info(id)
 {
+    console.log("logging in to zupang db..")
+
     let req = new XMLHttpRequest()
-    req.onreadystatechange = (e)=>{console.log(e)}
+    req.onreadystatechange = (e) => {
+        // Work In Progress..
+
+        console.log("A", e)
+        console.log("B", req.responseText)
+
+        console.log("zupang db logged in")
+    }
     req.open("POST", ZUPANG_LAMBDA_URL)
-    req.send({"protocol": "login", "id": id})
+    req.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+
+    payload = {
+        "protocol": "login", "id": id
+    }
+    req.send(JSON.stringify(payload))
 }
 
 function main()
 {
-    let login_hash = window.location.hash
+    let login_hash = window.location.hash || null
     if (!login_hash)
     {
         return
@@ -108,6 +121,12 @@ function main()
     let login_data = parse_params(login_hash.replace("#", ""))
     let access_token = login_data.access_token
     let scopes = login_data.scope.split("+")
+
+    if (!access_token || !scopes)
+    {
+        console.log("failed to fetch Twitch access token")
+        return
+    }
 
     get_twitch_userinfo(access_token)
 }
