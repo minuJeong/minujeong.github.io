@@ -23,6 +23,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 </head>
+
 <body>
 <div class="background"></div>
 <div class="foreground">
@@ -30,7 +31,7 @@
 <!-- Title -->
 <div class="title">
 <h2 style="margin: 20px 0px 20px 0px; grid-column: 1 / span 2;">
-    주팡 월드
+    주팡이봇 월드
 </h2>
 
 <div class="login" style="grid-column: 2">
@@ -50,11 +51,24 @@
     </canvas>
 
     <div class="info label">
-        <div class="label" id="preferred_name_display" style="text-align: right;">로그인해 주세요.</div>
-        <div class="label" id="hooks_collected">갈고리 수: -</div>
-        <div class="label">1</div>
-        <div class="label">2</div>
+        <a id="name_display_link">
+            <div class="label" id="name_display" style="text-align: center;">-</div>
+        </a>
+
+        <div class="label" id="hooks_collected" style="text-align: left;">-</div>
+        <div class="label" id="user_stats" style="text-align: left;"></div>
+
+        <div class="label" id="user_hp" style="text-align: left;">HP</div>
+        <div class="label" id="user_mp" style="text-align: left;">MP</div>
+
+        <div class="label" id="purse" style="text-align: center;"></div>
     </div>
+
+    <div class="label" id="inventory" style="grid-column: 1 / span 2; line-height: 300px;">
+        Inventory (예정)
+    </div>
+
+    <div class="label" id="credit" style="grid-column: 1 / span 2; text-align: right; font-size: 12;">made by minujeong</div>
 </div>
 
 </div>

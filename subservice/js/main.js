@@ -51,8 +51,6 @@ function get_twitch_userinfo(access_token)
 
 function on_load_oauth2(event)
 {
-    console.log(event.currentTarget)
-
     let res_oauth2 = JSON.parse(event.currentTarget.responseText)
     let userinfo = new UserInfo()
     userinfo.userid = res_oauth2.sub
@@ -72,7 +70,7 @@ function on_load_oauth2(event)
         userinfo.logo = res_kraken.logo
         userinfo.username = res_kraken.name
 
-        get_zupang_db_info(userinfo.username)
+        get_zupang_db_info(userinfo.display_name, userinfo.username)
     })
     req_kraken.open("GET", kraken_url)
     put_kraken_header(req_kraken)
@@ -80,29 +78,84 @@ function on_load_oauth2(event)
 
     let greeting = `안녕하세요. ${userinfo.display_name}님!`
     document.getElementById("login_welcome").innerText = greeting
-
-    let displayname = `${userinfo.display_name}님`
-    document.getElementById("preferred_name_display").innerText = displayname
 }
 
-function get_zupang_db_info(id)
+function get_zupang_db_info(display_name, username)
 {
     console.log("logging in to zupang db..")
 
+    const name_text = `${display_name} (${username})`
+    document.getElementById("name_display").innerText = name_text
+    document.getElementById("name_display_link").href = `https://www.twitch.tv/${username}`
+
     let req = new XMLHttpRequest()
     req.onreadystatechange = (e) => {
-        // Work In Progress..
+        switch(req.readyState)
+        {
+            // open
+            case 1:
+                console.log("opened db lambda connection..")
+                break;
 
-        console.log("A", e)
-        console.log("B", req.responseText)
+            // headers received
+            case 2:
+                console.log("header received")
+                break;
 
-        console.log("zupang db logged in")
+            // loading
+            case 3:
+                console.log("loading db login response..")
+                break;
+
+            // done
+            case 4:
+                console.log("zupang db logged in.")
+
+
+                let userinfo = null
+                try
+                {
+                    userinfo = JSON.parse(req.responseText)
+                }
+                catch
+                {
+                    console.log("zupang server response:", req.responseText)
+                    console.log("can't parse response")
+                    return
+                }
+
+                const hooks_text = `갈고리 수: ${userinfo._hooks}`
+                document.getElementById("hooks_collected").innerText = hooks_text
+
+                const user_stats_text = [
+                    `공격력: ${userinfo._atk}`,
+                    `방어력: ${userinfo._def}`,
+                    `마법력: ${userinfo._mag}`,
+                    `저항력: ${userinfo._reg}`,
+                    `HP: ${userinfo._hp}`,
+                    `MP: ${userinfo._mp}`,
+                ].join("\n")
+
+                document.getElementById("user_stats").innerText = user_stats_text
+
+                const purse_text = [
+                    `금화: ${userinfo._gold}`,
+                    `은화: ${userinfo._silver}`,
+                    `동화: ${userinfo._copper}`,
+                ].join(" ")
+                document.getElementById("purse").innerText = purse_text
+                break;
+
+            default:
+                console.log(`unhandled readystate: ${req.readyState}`)
+        }
     }
+
     req.open("POST", ZUPANG_LAMBDA_URL)
     req.setRequestHeader('Content-type', 'application/json; charset=utf-8');
 
     payload = {
-        "protocol": "login", "id": id
+        "protocol": "login", "username": username
     }
     req.send(JSON.stringify(payload))
 }

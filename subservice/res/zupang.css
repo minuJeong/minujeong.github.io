@@ -90,7 +90,7 @@ body
 {
     display: grid;
     width: 250px;
-    grid-template-rows: 39px 39px 39px auto;
+    grid-template-rows: 39px 39px auto 39px 39px 39px;
 }
 
 .label
@@ -99,4 +99,9 @@ body
     margin: 5px;
     padding: 2px;
     border: 2px #222 solid;
+}
+
+#inventory
+{
+    height: 300px;
 }
