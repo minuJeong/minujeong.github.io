@@ -12,10 +12,11 @@ a:active
     color: #FFF;
     text-decoration: underline;
 }
+
 body
 {
     color: #DDD;
-    overflow-x: hidden;
+    overflow: hidden;
     width: 100%;
     margin: 0px;
     padding: 0px;
@@ -72,9 +73,6 @@ body
 
 .content
 {
-    border: 2px #444 solid;
-    padding: 10px;
-    margin: 0px 10px 0px 10px;
     display: grid;
     grid-row-gap: 10px;
     grid-template-columns: auto auto;
@@ -103,5 +101,42 @@ body
 
 #inventory
 {
-    height: 300px;
+    height: 280px;
+}
+
+.tabs
+{
+    border: 2px #444 solid;
+    padding: 10px;
+    margin: 0px 10px 0px 10px;
+}
+
+.tab_buttons
+{
+    display: grid;
+    grid-template-columns: 200px 200px auto;
+    min-width: 686px;
+}
+
+.tab_button
+{
+    color: #BBB;
+    transition: color 0.5s ease;
+}
+
+.tab_button:hover
+{
+    color: #FFF;
+    text-decoration: underline;
+}
+
+.tab_button:active
+{
+    color: #FFF;
+    text-decoration: underline;
+}
+
+.tabitem
+{
+    display: none;
 }

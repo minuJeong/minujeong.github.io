@@ -132,11 +132,15 @@ function get_zupang_db_info(display_name, username)
                     `방어력: ${userinfo._def}`,
                     `마법력: ${userinfo._mag}`,
                     `저항력: ${userinfo._reg}`,
-                    `HP: ${userinfo._hp}`,
-                    `MP: ${userinfo._mp}`,
+                    `최대 체력: ${userinfo._maxhp}`,
+                    `최대 마력: ${userinfo._maxmp}`,
                 ].join("\n")
-
                 document.getElementById("user_stats").innerText = user_stats_text
+
+                const hpbar_ratio = userinfo._hp / userinfo._maxhp
+                const mpbar_ratio = userinfo._mp / userinfo._maxmp
+                document.getElementById("user_hp_bar").style.width = `${hpbar_ratio * 100.0}%`
+                document.getElementById("user_mp_bar").style.width = `${mpbar_ratio * 100.0}%`
 
                 const purse_text = [
                     `금화: ${userinfo._gold}`,

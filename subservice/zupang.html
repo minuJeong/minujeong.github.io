@@ -31,7 +31,7 @@
 <!-- Title -->
 <div class="title">
 <h2 style="margin: 20px 0px 20px 0px; grid-column: 1 / span 2;">
-    주팡이봇 월드
+    죽빵이봇 월드
 </h2>
 
 <div class="login" style="grid-column: 2">
@@ -46,30 +46,65 @@
 </div>
 
 <!-- Content -->
-<div class="content">
-    <canvas class="avatar label">
-    </canvas>
-
-    <div class="info label">
-        <a id="name_display_link">
-            <div class="label" id="name_display" style="text-align: center;">-</div>
-        </a>
-
-        <div class="label" id="hooks_collected" style="text-align: left;">-</div>
-        <div class="label" id="user_stats" style="text-align: left;"></div>
-
-        <div class="label" id="user_hp" style="text-align: left;">HP</div>
-        <div class="label" id="user_mp" style="text-align: left;">MP</div>
-
-        <div class="label" id="purse" style="text-align: center;"></div>
+<div class="tabs">
+    <div class="tab_buttons">
+        <div class="label tab_button" id="default_tab" onclick="select_tab(event, 'tab_info')">Info</div>
+        <div class="label tab_button" onclick="select_tab(event, 'tab_world')">World</div>
     </div>
 
-    <div class="label" id="inventory" style="grid-column: 1 / span 2; line-height: 300px;">
-        Inventory (예정)
+    <div class="tabitem" id="tab_info">
+        <div class="content">
+
+            <iframe class="avatar label" src="pangvatar_unity/index.html">
+            </iframe>
+
+            <div class="info label">
+                <a id="name_display_link">
+                    <div class="label" id="name_display" style="text-align: center;">-</div>
+                </a>
+
+                <div class="label" id="hooks_collected" style="text-align: left;">-</div>
+                <div class="label" id="user_stats" style="text-align: left;"></div>
+
+                <div class="label" id="user_hp" style="text-align: left;">
+                    <canvas id="user_hp_bar" style="display: block; width: 1%; height: 100%; background: #F00;">HP</canvas>
+                </div>
+                <div class="label" id="user_mp" style="text-align: left;">
+                    <canvas id="user_mp_bar" style="display: block; width: 1%; height: 100%; background: #00F;">MP</canvas>
+                </div>
+                <div class="label" id="purse" style="text-align: center;"></div>
+            </div>
+
+            <div class="label" id="inventory" style="grid-column: 1 / span 2; line-height: 300px;">
+                Inventory (예정)
+            </div>
+
+            <div class="label" id="credit" style="grid-column: 1 / span 2; text-align: right; font-size: 12;">made by minujeong</div>
+
+        </div>
     </div>
 
-    <div class="label" id="credit" style="grid-column: 1 / span 2; text-align: right; font-size: 12;">made by minujeong</div>
+    <div class="content tabitem" id="tab_world">
+    </div>
 </div>
+
+<script type="text/javascript">
+    document.getElementById("default_tab").click()
+    function select_tab(event, id)
+    {
+        for(let tab of document.getElementsByClassName("tabitem"))
+        {
+            tab.style.display = "none"
+        }
+        for (let tab_btn of document.getElementsByClassName("tab_button"))
+        {
+            tab_btn.className = tab_btn.className.replace(" active", "")
+        }
+
+        document.getElementById(id).style.display = "block"
+        event.currentTarget.className += " active"
+    }
+</script>
 
 </div>
 </body>
