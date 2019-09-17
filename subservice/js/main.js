@@ -86,6 +86,8 @@ function get_zupang_db_info(display_name, username)
 {
     console.log("logging in to zupang db..")
 
+    unity_instance.SendMessage("Game", "FeedUserName", username)
+
     const name_text = `${display_name} (${username})`
     document.getElementById("name_display").innerText = name_text
     document.getElementById("name_display_link").href = `https://www.twitch.tv/${username}`
@@ -174,9 +176,6 @@ function main()
         return
     }
 
-    document.getElementById("loginbutton").style.display = 'none'
-    document.getElementById("login_welcome").style.display = 'inline-block'
-
     let login_data = parse_params(login_hash.replace("#", ""))
     let access_token = login_data.access_token
     let scopes = login_data.scope.split("+")
@@ -190,4 +189,15 @@ function main()
     get_twitch_userinfo(access_token)
 }
 
-main()
+let login_hash = window.location.hash || null
+if (login_hash)
+{
+    document.getElementById("loginbutton").style.display = 'none'
+    document.getElementById("login_welcome").style.display = 'inline-block'
+}
+
+// feed username to pangvatar
+if (unity_instance == null)
+{
+    console.log("unity instance is null")
+}

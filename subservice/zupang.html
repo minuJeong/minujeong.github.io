@@ -18,6 +18,11 @@
     });
 </script>
 
+<script src="pangvatar_unity/Build/UnityLoader.js"></script>
+<script>
+    let unity_instance = UnityLoader.instantiate("pangvatar_container", "pangvatar_unity/Build/BUILD.json")
+</script>
+
 <link rel="stylesheet" type="text/css" href="res/zupang.css">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -56,8 +61,9 @@
     <div class="tabitem" id="tab_info">
         <div class="content">
 
-            <iframe class="avatar label" src="pangvatar_unity/index.html">
-            </iframe>
+            <div class="avatar label" style="padding: 2px; border: 2px #333 solid; margin: 5px;">
+                <div id="pangvatar_container"></div>
+            </div>
 
             <div class="info label">
                 <a id="name_display_link">
