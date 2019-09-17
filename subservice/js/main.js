@@ -42,6 +42,8 @@ function get_twitch_userinfo(access_token)
 {
     console.log("fetching twitch user info..")
 
+    document.getElementById("hooks_collected").innerText = "죽빵 서버에 로그인 중.."
+
     let req_oauth2 = new XMLHttpRequest()
     req_oauth2.addEventListener("load", on_load_oauth2)
     req_oauth2.open("GET", "https://id.twitch.tv/oauth2/userinfo");
