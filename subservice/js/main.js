@@ -194,6 +194,7 @@ if (login_hash)
 {
     document.getElementById("loginbutton").style.display = 'none'
     document.getElementById("login_welcome").style.display = 'inline-block'
+    document.getElementById("login_welcome").innerText = '트위치 로그인 중..'
 }
 
 // feed username to pangvatar
