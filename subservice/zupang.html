@@ -110,11 +110,11 @@
         }
         for (let tab_btn of document.getElementsByClassName("tab_button"))
         {
-            tab_btn.className = tab_btn.className.replace(" active", "")
+            tab_btn.className = tab_btn.className.replace("tab_button_active", "")
         }
 
         document.getElementById(id).style.display = "block"
-        event.currentTarget.className += " active"
+        event.currentTarget.className += " tab_button_active"
     }
 </script>
 

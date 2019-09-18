@@ -131,6 +131,11 @@ body
     text-decoration: underline;
 }
 
+.tab_button_active
+{
+    border: 2px #777 solid;
+}
+
 .tabitem
 {
 }
