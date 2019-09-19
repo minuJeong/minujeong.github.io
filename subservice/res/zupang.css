@@ -74,7 +74,6 @@ body
 .content
 {
     display: grid;
-    grid-row-gap: 10px;
     grid-template-columns: auto auto;
 }
 
@@ -84,11 +83,16 @@ body
     height: 400px;
 }
 
-.info
+.info_details
 {
     display: grid;
-    width: 250px;
     grid-template-rows: 39px 39px auto 39px 39px 39px;
+}
+
+.stock_details
+{
+    display: grid;
+    grid-template-rows: 39px 39px auto;
 }
 
 .label
@@ -109,7 +113,7 @@ body
 .tab_buttons
 {
     display: grid;
-    grid-template-columns: 120px 120px 120px auto;
+    grid-template-columns: 88px 88px 88px 88px auto;
     min-width: 686px;
 }
 
@@ -142,10 +146,15 @@ body
 
 #inventory
 {
-    height: 280px;
+    height: 400px;
 }
 
 #world
 {
-    height: 280px;
+    height: 400px;
+}
+
+#stock_pricechart
+{
+    height: 300px;
 }

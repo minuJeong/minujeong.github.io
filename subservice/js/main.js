@@ -42,7 +42,10 @@ function get_twitch_userinfo(access_token)
 {
     console.log("fetching twitch user info..")
 
-    document.getElementById("hooks_collected").innerText = "죽빵 서버에 로그인 중.."
+    for (let hookcount of document.getElementsByClassName("hooks_collected"))
+    {
+        hookcount.innerText = "죽빵 서버에 로그인 중.."
+    }
 
     let req_oauth2 = new XMLHttpRequest()
     req_oauth2.addEventListener("load", on_load_oauth2)
@@ -129,7 +132,10 @@ function get_zupang_db_info(display_name, username)
                 }
 
                 const hooks_text = `갈고리 수: ${userinfo._hooks}`
-                document.getElementById("hooks_collected").innerText = hooks_text
+                for (let hookcount of document.getElementsByClassName("hooks_collected"))
+                {
+                    hookcount.innerText = hooks_text
+                }
 
                 const user_stats_text = [
                     `공격력: ${userinfo._atk}`,
@@ -151,7 +157,10 @@ function get_zupang_db_info(display_name, username)
                     `은화: ${userinfo._silver}`,
                     `동화: ${userinfo._copper}`,
                 ].join(" ")
-                document.getElementById("purse").innerText = purse_text
+                for (let purse of document.getElementsByClassName("purse"))
+                {
+                    purse.innerText = purse_text
+                }
                 break;
 
             default:
