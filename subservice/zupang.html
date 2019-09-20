@@ -35,9 +35,6 @@
 
 <!-- Title -->
 <div class="title">
-<h2 style="margin: 20px 0px 20px 0px; grid-column: 1 / span 2;">
-    죽빵월드
-</h2>
 
 <div class="login" style="grid-column: 2">
     <a class="loginlabel" id="loginbutton" href="https://id.twitch.tv/oauth2/authorize?client_id=ig9mcp3lsizqtypzce3v3ryv66lz93&redirect_uri=http://minujeong.com/subservice/zupang.html&response_type=token&scope=user_read channel_check_subscription&claims={'id_token':{'email': null,'email_verified': null}, 'userinfo':{'picture': null}}">
@@ -50,28 +47,38 @@
 
 </div>
 
+<div class="content" style="margin: 10px; padding: 10px; border: 2px #444 solid;">
+<div class="avatar label" style="padding: 2px; border: 2px #333 solid; margin: 5px;">
+    <div id="pangvatar_container"></div>
+</div></div>
+
 <!-- Content -->
 <div class="tabs">
     <div class="tab_buttons">
-        <div class="label tab_button" onclick="select_tab(event, 'tab_info')">정보</div>
-        <div class="label tab_button" id="default_tab" onclick="select_tab(event, 'tab_stock')">주식</div>
+        <div class="label tab_button" id="default_tab" onclick="select_tab(event, 'tab_info')">정보</div>
+        <div class="label tab_button" onclick="select_tab(event, 'tab_stock')">주식</div>
         <div class="label tab_button" onclick="select_tab(event, 'tab_inventory')">가방</div>
         <div class="label tab_button" onclick="select_tab(event, 'tab_world')">탐험</div>
     </div>
 
     <div class="tabitem" id="tab_info">
         <div class="content">
-            <div class="avatar label" style="padding: 2px; border: 2px #333 solid; margin: 5px;">
-                <div id="pangvatar_container"></div>
-            </div>
-
             <div class="info_details label">
-                <a id="name_display_link">
-                    <div class="label" id="name_display" style="text-align: center;">-</div>
-                </a>
+                <div style="display: grid; grid-template-columns: auto auto;">
+                    <a id="name_display_link">
+                        <div class="label" id="name_display" style="text-align: center;">-</div>
+                    </a>
+                    <div class="label hooks_collected">-</div>
+                </div>
 
-                <div class="label hooks_collected">-</div>
-                <div class="label" id="user_stats" style="text-align: left;"></div>
+                <div class="label" id="user_stats" style="text-align: left;">
+                    <pre class="small_label" id="user_stats_atk">-</pre>
+                    <pre class="small_label" id="user_stats_def">-</pre>
+                    <pre class="small_label" id="user_stats_mag">-</pre>
+                    <pre class="small_label" id="user_stats_reg">-</pre>
+                    <pre class="small_label" id="user_stats_maxhp">-</pre>
+                    <pre class="small_label" id="user_stats_maxmp">-</pre>
+                </div>
 
                 <div class="label" id="user_hp" style="text-align: left;">
                     <canvas id="user_hp_bar" style="display: block; width: 1%; height: 100%; background: #F00;">HP</canvas>
@@ -79,22 +86,22 @@
                 <div class="label" id="user_mp" style="text-align: left;">
                     <canvas id="user_mp_bar" style="display: block; width: 1%; height: 100%; background: #00F;">MP</canvas>
                 </div>
-                <div class="label purse" style="text-align: center;"></div>
+                <pre class="label purse" style="text-align: center;"></pre>
             </div>
         </div>
     </div>
 
     <div class="tabitem" id="tab_stock">
         <div class="content">
-            <div class="label" id="stock_pricechart" style="line-height: 208px;">
+            <div class="label" id="stock_pricechart">
                 pricing chart
             </div>
             <div class="label stock_details">
                 <div class="label hooks_collected">_</div>
-                <div class="label purse"></div>
+                <pre class="label purse"></pre>
                 <div class="label stock_detail_trade">
-                    <a><div class="label">BUY</div></a>
-                    <a><div class="label">SELL</div></a>
+                    <a><div class="button">BUY</div></a>
+                    <a><div class="button">SELL</div></a>
                 </div>
             </div>
 
@@ -105,13 +112,13 @@
     </div>
 
     <div class="content tabitem" id="tab_inventory">
-        <div class="label" id="inventory" style="line-height: 400px;">
+        <div class="label" id="inventory">
             Inventory (예정)
         </div>
     </div>
 
     <div class="content tabitem" id="tab_world">
-        <div class="label" id="world" style="line-height: 400px;">
+        <div class="label" id="world">
             World (예정)
         </div>
     </div>

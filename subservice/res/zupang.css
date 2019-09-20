@@ -16,7 +16,7 @@ a:active
 body
 {
     color: #DDD;
-    overflow: hidden;
+    overflow-x: hidden;
     width: 100%;
     margin: 0px;
     padding: 0px;
@@ -39,7 +39,7 @@ body
 {
     position: absolute;
     left: 50%;
-    margin: 20px 0px 20px 0px;
+    margin: 10px 0px 0px 0px;
     padding: 0px;
     transform: translate(-50%, 0%);
 }
@@ -47,7 +47,7 @@ body
 .title
 {
     display: grid;
-    grid-template-columns: auto 220px;
+    /*grid-template-columns: auto 220px;*/
     border: 2px #444 solid;
     margin: 10px 10px 8px 10px;
     padding: 0px 10px 0px 10px;
@@ -58,10 +58,9 @@ body
 .login
 {
     background-color: #4b367c;
-    width: 220px;
     height: 32px;
     line-height: 32px;
-    margin: 0px 0px 10px 0px;
+    margin: 10px 0px 10px 0px;
     left: 0px;
     font-size: 14;
 }
@@ -73,12 +72,13 @@ body
 
 .content
 {
-    display: grid;
-    grid-template-columns: auto auto;
+    display: block;
+    text-align: center;
 }
 
 .avatar
 {
+    display: inline-block;
     width: 400px;
     height: 400px;
 }
@@ -86,7 +86,7 @@ body
 .info_details
 {
     display: grid;
-    grid-template-rows: 39px 39px auto 39px 39px 39px;
+    grid-template-rows: 39px auto 39px 39px 39px;
 }
 
 .stock_details
@@ -95,12 +95,41 @@ body
     grid-template-rows: 39px 39px auto;
 }
 
+.small_label
+{
+    color: #999;
+    text-align: left;
+    margin: 2px;
+    padding: 1px 20px 1px 10px;
+    border: 2px #151515 solid;
+}
+
 .label
 {
     text-align: center;
     margin: 5px;
     padding: 2px;
     border: 2px #222 solid;
+}
+
+.button
+{
+    text-align: center;
+    color: #CCC;
+    background-color: #222;
+    margin: 5px;
+    padding: 2px;
+    border: 2px #222 solid;
+
+    transition: color 0.5s ease;
+    transition: background 0.5s ease;
+}
+
+.button:hover
+{
+    color: #FFF;
+    background-color: #111;
+    text-decoration: bold;
 }
 
 .tabs
@@ -114,7 +143,7 @@ body
 {
     display: grid;
     grid-template-columns: 88px 88px 88px 88px auto;
-    min-width: 686px;
+    min-width: auto;
 }
 
 .tab_button
@@ -144,17 +173,26 @@ body
 {
 }
 
-#inventory
+#user_stats
 {
-    height: 400px;
-}
-
-#world
-{
-    height: 400px;
+    display: grid;
+    grid-template-columns: 50% 50%;
 }
 
 #stock_pricechart
 {
-    height: 300px;
+    height: 100px;
+    line-height: 100px;
+}
+
+#inventory
+{
+    height: 200px;
+    line-height: 200px;
+}
+
+#world
+{
+    height: 200px;
+    line-height: 200px;
 }

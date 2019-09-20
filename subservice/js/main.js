@@ -137,15 +137,12 @@ function get_zupang_db_info(display_name, username)
                     hookcount.innerText = hooks_text
                 }
 
-                const user_stats_text = [
-                    `공격력: ${userinfo._atk}`,
-                    `방어력: ${userinfo._def}`,
-                    `마법력: ${userinfo._mag}`,
-                    `저항력: ${userinfo._reg}`,
-                    `최대 체력: ${userinfo._maxhp}`,
-                    `최대 마력: ${userinfo._maxmp}`,
-                ].join("\n")
-                document.getElementById("user_stats").innerText = user_stats_text
+                document.getElementById("user_stats_atk").innerText = `공격력: \t${userinfo._atk}`
+                document.getElementById("user_stats_def").innerText = `방어력: \t${userinfo._def}`
+                document.getElementById("user_stats_mag").innerText = `마법력: \t${userinfo._mag}`
+                document.getElementById("user_stats_reg").innerText = `저항력: \t${userinfo._reg}`
+                document.getElementById("user_stats_maxhp").innerText = `최대 체력: \t${userinfo._maxhp}`
+                document.getElementById("user_stats_maxmp").innerText = `최대 마력: \t${userinfo._maxmp}`
 
                 const hpbar_ratio = userinfo._hp / userinfo._maxhp
                 const mpbar_ratio = userinfo._mp / userinfo._maxmp
@@ -154,7 +151,9 @@ function get_zupang_db_info(display_name, username)
 
                 const purse_text = [
                     `금화: ${userinfo._gold}`,
+                    "   ",
                     `은화: ${userinfo._silver}`,
+                    "   ",
                     `동화: ${userinfo._copper}`,
                 ].join(" ")
                 for (let purse of document.getElementsByClassName("purse"))
@@ -198,6 +197,10 @@ function main()
     get_twitch_userinfo(access_token)
 }
 
+// TODO: call this after unity instance loaded
+function unityIsReady()
+{}
+
 let login_hash = window.location.hash || null
 if (login_hash)
 {
@@ -211,3 +214,5 @@ if (unity_instance == null)
 {
     console.log("unity instance is null")
 }
+
+// main()
