@@ -12,10 +12,7 @@
 
 <script>
 // this is not security, but just a memo for a task TODO.
-var unityInstance = null
-if (new URL(window.location.href).searchParams.get("access_token") == "vdhuaihfeih32rfaihaduif")
-{ unityInstance = UnityLoader.instantiate("unityContainer", "Build/BUILD.json", {onProgress: UnityProgress}) }
-else { document.getElementById("unityContainer").style.visibility = "hidden" }
+var unityInstance = UnityLoader.instantiate("unityContainer", "Build/BUILD.json", {onProgress: UnityProgress})
 </script>
 </head>
 
