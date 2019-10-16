@@ -1,0 +1,16 @@
+{
+"companyName": "Creative Assembly",
+"productName": "TWTA_1831",
+"productVersion": "0.1",
+"dataUrl": "BUILD.data.unityweb",
+"wasmCodeUrl": "BUILD.wasm.code.unityweb",
+"wasmFrameworkUrl": "BUILD.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Light",
+"backgroundColor": "#828080",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.2.9f1"
+}

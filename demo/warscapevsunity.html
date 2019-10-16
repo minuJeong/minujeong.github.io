@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<title>TWTA-1831</title>
+<link rel="shortcut icon" href="TemplateData/favicon.ico">
+<link rel="stylesheet" href="TemplateData/style.css">
+
+<script src="TemplateData/UnityProgress.js"></script>
+<script src="Build/UnityLoader.js"></script>
+
+<script>
+// this is not security, but just a memo for a task TODO.
+var unityInstance = null
+if (new URL(window.location.href).searchParams.get("access_token") == "vdhuaihfeih32rfaihaduif")
+{ unityInstance = UnityLoader.instantiate("unityContainer", "Build/BUILD.json", {onProgress: UnityProgress}) }
+else { document.getElementById("unityContainer").style.visibility = "hidden" }
+</script>
+</head>
+
+<body>
+<div class="webgl-content" style="width: 100%; height: 100%">
+  <div id="unityContainer" style="width: 100%; height: 100%"></div>
+</div>
+</body>
+</html>
