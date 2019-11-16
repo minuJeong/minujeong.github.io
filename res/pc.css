@@ -193,6 +193,15 @@ body
     grid-auto-rows: auto;
 }
 
+.gallery_drawings_container
+{
+    display: grid;
+    grid-row-gap: 10px;
+    grid-column-gap: 10px;
+    grid-template-columns: repeat(6, auto);
+    grid-auto-rows: auto;
+}
+
 .gallery_drawing_item
 {
     padding: 7px;
