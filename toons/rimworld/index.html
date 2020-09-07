@@ -1,0 +1,45 @@
+<html>
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-121641346-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-121641346-1',
+    {
+        "page_title": "rimworld_toon_index",
+        "page_path": "/home/toons/rimworld/viewer"
+    });
+</script>
+<script src="./index.js" defer></script>
+<link rel="stylesheet" href="./index_style.css">
+</head>    
+<body onload="init()">
+<div class="background">
+
+<div class="episode_list">
+    <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00000`">
+        <img class="thumbnail" src="./thumbnails/00000_th_prologue.png"></img>
+        <div class="episode_title"> 0. 프롤로그 </div>
+    </div>
+
+    <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00001`">
+        <img class="thumbnail" src="./thumbnails/00000_th_prologue.png"></img>
+        <div class="episode_title"> 1. 낙하 </div>
+    </div>
+
+    <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00002`">
+        <img class="thumbnail" src="./thumbnails/00000_th_prologue.png"></img>
+        <div class="episode_title"> 2. 방문객 </div>
+    </div>
+
+    <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00003`">
+        <img class="thumbnail" src="./thumbnails/00000_th_prologue.png"></img>
+        <div class="episode_title"> 3. 광란 </div>
+    </div>
+</div>
+
+</div>    
+</body>
+</html>
