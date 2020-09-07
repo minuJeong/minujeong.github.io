@@ -18,28 +18,60 @@
 <body onload="init()">
 <div class="background">
 
+<div class="title">
+<div class="title_text">
+림월드 덕질하는 만화
+</div>
+<div class="title_home_button" onclick="window.location.href=`http://minujeong.com`">
+<img src="./home.png" width="32" height="32"/>
+</div>
+</div>
+
 <div class="episode_list">
     <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00000`">
-        <img class="thumbnail" src="./thumbnails/00000_th_prologue.png"></img>
+        <div class="episode_thumbnail">
+            <img src="./thumbnails/00000.png" alt="image not found" onerror="this.src = `./in_progress.png`"></img>
+        </div>
         <div class="episode_title"> 0. 프롤로그 </div>
     </div>
 
     <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00001`">
-        <img class="thumbnail" src="./thumbnails/00000_th_prologue.png"></img>
+        <div class="episode_thumbnail">
+            <img src="./thumbnails/00001.png" alt="image not found" onerror="this.src = `./in_progress.png`"></img>
+        </div>
         <div class="episode_title"> 1. 낙하 </div>
     </div>
 
     <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00002`">
-        <img class="thumbnail" src="./thumbnails/00000_th_prologue.png"></img>
+        <div class="episode_thumbnail">
+            <img src="./thumbnails/00002.png" alt="image not found" onerror="this.src = `./in_progress.png`"></img>
+        </div>
         <div class="episode_title"> 2. 방문객 </div>
     </div>
 
     <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00003`">
-        <img class="thumbnail" src="./thumbnails/00000_th_prologue.png"></img>
+        <div class="episode_thumbnail">
+            <img src="./thumbnails/00003.png" alt="image not found" onerror="this.src = `./in_progress.png`"></img>
+        </div>
         <div class="episode_title"> 3. 광란 </div>
     </div>
+
+    <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00004`">
+        <div class="episode_thumbnail">
+            <img src="./thumbnails/00004.png" alt="image not found" onerror="this.src = `./in_progress.png`"></img>
+        </div>
+        <div class="episode_title"> 4. in progress </div>
+    </div>
+
+    <div class="episode_item" onclick="window.location.href = `./pages/viewer.html?episode=00005`">
+        <div class="episode_thumbnail">
+            <img src="./thumbnails/00005.png" alt="image not found" onerror="this.src = `./in_progress.png`"></img>
+        </div>
+        <div class="episode_title"> 5. in progress </div>
+    </div>
+
 </div>
 
-</div>    
+</div>
 </body>
 </html>

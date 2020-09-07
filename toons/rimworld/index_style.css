@@ -1,6 +1,10 @@
 body
 {
-    color: #EEEEEE;
+    color: #BBB;
+
+    font-size: 14px;
+    font-family: Roboto, Arial, sans-serif;
+
     height: 100%;
     margin: 0px;
     overflow-x: hidden;
@@ -8,7 +12,10 @@ body
 
 .background
 {
-    background: linear-gradient(#222, #333);
+    display: flex;
+    flex-direction: column;
+
+    background: linear-gradient(#111, #333);
     position: fixed;
     width: 100%;
     height: 100%;
@@ -17,29 +24,100 @@ body
     padding: 0px;
 }
 
+.title
+{
+    display: flex;
+    flex-direction: column;
+
+    width: 600px;
+    margin: 10px;
+    padding: 10px;
+    background-color: #2228;
+    align-self: center;
+}
+
+.title_text
+{
+    font-size: 24px;
+    text-align: center;
+    padding: 5px;
+}
+
+.title_home_button
+{
+    font-size: 14px;
+    text-align: center;
+    padding: 5px;
+    width: 32px;
+    height: 32px;
+
+    outline: 0px solid #888;
+    outline-offset: -0px;
+    background-color: #111;
+    transition: background-color .5s, color, outline .1s, outline-offset .1s;
+}
+
+.title_home_button:hover
+{
+    background-color: #333;
+    color: #EEE;
+    outline: 4px solid #888;
+    outline-offset: -4px;
+}
+
 .episode_list
 {
-    background: linear-gradient(#333, #444);
-    width: 800px;
-    position: absolute;
-    left: 50%;
-    margin: 20px 0px 20px 0px;
-    padding: 0px;
-    transform: translate(-50%, 0%);
+    background-color: #222;
+    width: 600px;
+    margin: 10px;
+    padding: 10px;
+
+    align-self: center;
 }
 
 .episode_item
 {
-    background: linear-gradient(#444, #555);
+    display: flex;
+    flex-direction: row;
+
+    outline: 0px solid #888;
+    outline-offset: -0px;
+    background-color: #333;
+    transition: background-color .5s, color, outline .1s, outline-offset .1s;
+
     margin: 5px;
+    height: 100px;
 }
 
-.thumbnail
+.episode_item:hover
 {
-    display: inline-block;
+    outline: 2px solid #BBB;
+    outline-offset: -2px;
+    background-color: #222;
+    color: #EEE;
+}
+
+.episode_thumbnail
+{
+    background: transparent;
+
+    width: 100px;
+    height: 100px;
+
+    outline: 0px solid #888;
+    outline-offset: -0px;
+    transition: outline .1s, outline-offset .1s;
+}
+
+.episode_thumbnail:hover
+{
+    outline: 7px solid #222;
+    outline-offset: -7px;
 }
 
 .episode_title
 {
-    display: inline-block;
+    margin: 5px;
+    margin-left: 20px;
+    line-height: 90px;
 }
